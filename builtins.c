@@ -3,6 +3,7 @@
  * (incomplete implementation)
  *
  */
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>  /* Malloc lives here   */
 #include <string.h>  /* For strcpy */
