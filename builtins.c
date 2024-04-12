@@ -145,6 +145,7 @@ vm_Word method_Obj_string[] = {
 /* Obj:print */
 
 vm_Word method_Obj_print[] = {
+	/* REFERENCE: .instr/int_val reference to vm_Word union representing bytecode */
         {.instr = vm_op_enter},
         {.instr = vm_op_load},
         {.intval = 0},
@@ -506,6 +507,8 @@ obj_ref nothing = (obj_ref) &nothing_struct;
  *    Those of Obj
  *    PLUS
  *    LESS
+ *    TIMES
+ *    DIVIDE
  *    (add more later)
  * =================
  */
