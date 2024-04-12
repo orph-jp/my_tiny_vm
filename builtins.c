@@ -636,6 +636,72 @@ vm_Word method_Int_plus[] = {
         {.intval = 1}
 };
 
+/* Int:minus (new native_method) */
+obj_ref native_Int_minus(void ) {
+    obj_ref this = vm_fp->obj;
+    assert_is_type(this, the_class_Int);
+    obj_Int this_int = (obj_Int) this;
+    obj_ref other = (vm_fp - 1)->obj;
+    assert_is_type(other, the_class_Int);
+    obj_Int other_int = (obj_Int) other;
+    log_debug("Subtracting integer values: %d - %d",
+           this_int->value, other_int->value);
+    obj_ref diff = new_int(this_int->value - other_int->value);
+    return diff;
+}
+
+vm_Word method_Int_minus[] = {
+        {.instr = vm_op_enter},
+        {.instr = vm_op_call_native},
+        {.native = native_Int_minus},
+        {.instr = vm_op_return},
+        {.intval = 1}
+};
+
+/* Int:times (new native_method) */
+obj_ref native_Int_times(void ) {
+    obj_ref this = vm_fp->obj;
+    assert_is_type(this, the_class_Int);
+    obj_Int this_int = (obj_Int) this;
+    obj_ref other = (vm_fp - 1)->obj;
+    assert_is_type(other, the_class_Int);
+    obj_Int other_int = (obj_Int) other;
+    log_debug("Multiplying integer values: %d * %d",
+           this_int->value, other_int->value);
+    obj_ref prod = new_int(this_int->value * other_int->value);
+    return prod;
+}
+
+vm_Word method_Int_times[] = {
+        {.instr = vm_op_enter},
+        {.instr = vm_op_call_native},
+        {.native = native_Int_times},
+        {.instr = vm_op_return},
+        {.intval = 1}
+};
+
+/* Int:divide (new native_method) */
+obj_ref native_Int_divide(void ) {
+    obj_ref this = vm_fp->obj;
+    assert_is_type(this, the_class_Int);
+    obj_Int this_int = (obj_Int) this;
+    obj_ref other = (vm_fp - 1)->obj;
+    assert_is_type(other, the_class_Int);
+    obj_Int other_int = (obj_Int) other;
+    log_debug("Divide integer values: %d / %d",
+           this_int->value, other_int->value);
+    obj_ref quotient = new_int(this_int->value / other_int->value);
+    return quotient;
+}
+
+vm_Word method_Int_divide[] = {
+        {.instr = vm_op_enter},
+        {.instr = vm_op_call_native},
+        {.native = native_Int_divide},
+        {.instr = vm_op_return},
+        {.intval = 1}
+};
+
 /* The Int Class (a singleton) */
 struct  class_struct  the_class_Int_struct = {
         .header = {
@@ -660,7 +726,7 @@ class_ref the_class_Int = &the_class_Int_struct;
 /* Construct an integer object containing
  * a particular value  (aka "boxed",
  * like Int in Java, not like int in Java).
- * Used by built-in vm methods like Int:add, not
+ * Used by built-in vm methods like Int:plus, Int:minus, etc. not
  * available directly to the interpreted program.
  */
 obj_ref new_int(int n) {
