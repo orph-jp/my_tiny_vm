@@ -1,0 +1,20 @@
+//# Lark grammar, used in calc_ast.py to create the 
+//# abstract syntax tree structure from the grammar that lies herein.
+?start: seq
+
+seq: seq sum ";" -> seq_more
+    | sum ";"    -> seq_one
+
+
+sum: sum "+" number -> add
+   | sum "-" number -> minus
+   | number
+
+// Lexical structure follows hereafter. Eerything above was the Backus Naur Form of the grammar
+// We can begin by ignoring the whitespaces within the syntax
+%import common.WS
+%ignore WS 
+
+// Then we write the regular expression pattern for each "number" object
+number: INT
+INT: /^([+-}?[1-9]\d*|0)$/

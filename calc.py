@@ -1,10 +1,7 @@
 """
-Basic calculator
+Grammar and parser for the tiny calculator
 ================
 
-A simple example of a REPL calculator
-
-This example shows how to write a basic calculator with variables.
 """
 from lark import Lark, Transformer, v_args
 
@@ -46,7 +43,7 @@ class CalculateTree(Transformer):
     number = float
 
     def __init__(self):
-        self.vars = {}
+        pass
 
     def assign_var(self, name, value):
         self.vars[name] = value
