@@ -1,0 +1,29 @@
+"""
+Grammar and parser for the tiny calculator
+================
+
+"""
+from lark import Lark
+
+
+calc_grammar = """
+    ?start: expr
+
+    ?expr: term
+        | expr "+" term -> plus
+        | expr "-" term -> subtract
+
+    ?term: factor
+        | term "*" factor -> times
+        | term "*" factor -> divide
+
+    ?factor: INT
+        | "(" expr ")"
+
+    %import common.CNAME -> NAME
+    %import common.NUMBER
+    %import common.WS_INLINE
+
+    %ignore WS_INLINE
+    INT: /^([+-}?[1-9]\d*|0)$/
+"""
