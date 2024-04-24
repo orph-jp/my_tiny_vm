@@ -13,43 +13,35 @@ except NameError:
 
 
 calc_grammar = """
-    ?start: sum
-          | NAME "=" sum    -> assign_var
+    ?start: expr
 
-    ?sum: product
-        | sum "+" product   -> add
-        | sum "-" product   -> sub
+    ?expr: term
+        | expr "+" term -> plus
+        | expr "-" term -> subtract
 
-    ?product: atom
-        | product "*" atom  -> mul
-        | product "/" atom  -> div
+    ?term: factor
+        | term "*" factor -> times
+        | term "*" factor -> divide
+
+    ?factor: INT
+        | "(" expr ")"
 
     %import common.CNAME -> NAME
     %import common.NUMBER
     %import common.WS_INLINE
 
     %ignore WS_INLINE
+    INT: /^([+-}?[1-9]\d*|0)$/
 """
 
 
 @v_args(inline=True)    # Affects the signatures of the methods
-class CalculateTree(Transformer):
-    from operator import add, sub, mul, truediv as div, neg
-    number = int
 
-    def __init__(self):
-        pass
-
-    def assign_var(self, name, value):
-        self.vars[name] = value
-        return value
-
-    def var(self, name):
-        try:
-            return self.vars[name]
-        except KeyError:
-            raise Exception("Variable not found: %s" % name)
-
+class AssemblyGenerator(Transformer):
+    def add(self, items):
+        left, right = items
+        code = []
+        code.
 
 calc_parser = Lark(calc_grammar, parser='lalr', transformer=CalculateTree())
 calc = calc_parser.parse
