@@ -17,4 +17,5 @@ sum: sum "+" number -> add
 
 // Then we write the regular expression pattern for each "number" object
 number: INT
+// We can write 
 INT: /^([+-}?[1-9]\d*|0)$/

@@ -24,11 +24,6 @@ calc_grammar = """
         | product "*" atom  -> mul
         | product "/" atom  -> div
 
-    ?atom: NUMBER           -> number
-         | "-" atom         -> neg
-         | NAME             -> var
-         | "(" sum ")"
-
     %import common.CNAME -> NAME
     %import common.NUMBER
     %import common.WS_INLINE
@@ -40,7 +35,7 @@ calc_grammar = """
 @v_args(inline=True)    # Affects the signatures of the methods
 class CalculateTree(Transformer):
     from operator import add, sub, mul, truediv as div, neg
-    number = float
+    number = int
 
     def __init__(self):
         pass
@@ -58,7 +53,10 @@ class CalculateTree(Transformer):
 
 calc_parser = Lark(calc_grammar, parser='lalr', transformer=CalculateTree())
 calc = calc_parser.parse
-
+# transformer = sums_reshape.SumsTransformer()
+# ast = transformer.transform(concrete)
+# print(ast)
+# print(f"as {repr(ast)}"
 
 def main():
     while True:
