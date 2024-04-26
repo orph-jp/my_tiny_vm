@@ -58,7 +58,7 @@ class Divide(BinOp):
     def __init__(self, left: ASTNode, right: ASTNode):
         super().__init__('/', left, right)
 
-class Seq(ASTNode):
+class Expr(ASTNode):
     """A sequence of sums. We could represent it in a treelike manner
     to better match a left-recursive grammar, but we'll instead represent
     it as a list of sums to illustrate how we can apply a lark transformer
@@ -80,10 +80,10 @@ class Seq(ASTNode):
 def smoke_test_sums():
     sum1 = Plus(1, Minus(2, 3))
     sum2 = Minus(2, 1)
-    seq = Seq()
-    seq.append(sum1)
-    seq.append(sum2)
-    print(seq)
+    expr = Expr()
+    expr.append(sum1)
+    expr.append(sum2)
+    print(expr)
 
 if __name__ == "__main__":
     smoke_test_sums()
