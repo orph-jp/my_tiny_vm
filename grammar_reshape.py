@@ -40,4 +40,15 @@ i       # ast_node = grammar_ast.Int(val)
     def expr_one(self, children):
         """This will always be the first reduction to expr"""
         log.debug(f"Processing sequence {base case} with {children}")
-        expr = grammar_ast.
+        expr = grammar_ast.Expr()
+        expr.append(children[0])
+        log.debug(f"Exoression is now {expr}")
+        return expr
+
+    def seq_more(self, children):
+        """This left-recursive production will always be reduced AFTER
+        the base case has been reduced."""
+        log.debug(f"Processing expr (recursive case) with {children}"))
+        expr, sum = children
+        expr.append(sum)
+        return expr
