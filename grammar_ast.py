@@ -39,7 +39,7 @@ class BinOp(Sum):
         return f"({self.left} {self.op} {self.right})" 
 
     def __repr__(self) -> str:
-        clazz = self.__clas__.__name__
+        clazz = self.__class__.__name__
         return f"{clazz}({repr(self.left)}, {repr(self.right)})"
 
 class Plus(BinOp):

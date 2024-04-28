@@ -11,7 +11,7 @@ calc_grammar = """
 
     ?expr: term
         | expr "+" term -> plus
-        | expr "-" term -> subtract
+        | expr "-" term -> minus
 
     ?term: factor
         | term "*" factor -> times
