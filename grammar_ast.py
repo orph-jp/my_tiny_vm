@@ -7,7 +7,7 @@ log.setLevel(logging.DEBUG)
 class ASTNode:
     """Abstract base class for abstract sequence of patterns"""
     def __init__(self):
-        this_class = self.__clas__.__name__
+        this_class = self.__class__.__name__
         if this_class == "ASTNode":
             raise NotImplementedError("ASTNode is an abstract class and should not be instantiated")
         else:
