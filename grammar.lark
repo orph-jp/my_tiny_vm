@@ -1,8 +1,5 @@
-"""
-Grammar and parser for the tiny calculator
-================
-
-"""
+//# Grammar and parser for the infix notation of basic calculator
+//# ================
 
 ?start: expr
 
@@ -15,9 +12,9 @@ Grammar and parser for the tiny calculator
      | term "/" int -> divide
      | int
 
-%import common.CNAME -> NAME
+%import common.WS
 %import common.WS_INLINE
-
+%import common.INT -> int
+%ignore WS
 %ignore WS_INLINE
-int: INT
-INT: /^([+-}?[1-9]\d*|0)$/
+//# /^([+-]?[1-9]\d*|0)$/
