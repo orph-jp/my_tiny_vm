@@ -33,8 +33,25 @@ class ASTNode:
         Always increases stack depth by 1."""i
         raise NotImplementedError(f"r_eval not implemented for node type {self.__class__.__name__}") # because this is called by self.__class__.__name__ instance and will redirected to Abstract class
 
-    def c_eval(self, buffer: list[str]):
+    def c_eval(self, true_branch: str, false_branch: str, buffer: list[str]):
+        """ Code generation method for control flow evaluation. 
+        Branches = labels (used in .asm). When evaluated, serves as a go-to, in some sense,
+        but rather a 'fall through'"""
         raise NotImplementedError(f"c_eval not implemented for node type {self.__class__.__name__}")
+
+    def gen_code(self, buffer: list[str]):
+        """Gen_code is code generation method that does not alter the depth of the 
+        stack, unlike c_eval and r_eval."""
+        raise NotImplementedError(f"No gen_code method for class {self.__class__.__name__}")
+
+    def dot_id(self) -> str:
+        """ Python;s built-in 'id' functiopn lets us create unique IDs"""
+        return f"node_{id(self)}" # So for instance, Node_4
+
+    def dot_label(self) -> str:
+        """Returns the class as a node label.
+        Override to palce other attributes within this tag."""
+        return self.__class__.__name__
 class Sum(ASTNode):
     pass
 
