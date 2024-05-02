@@ -52,6 +52,16 @@ class ASTNode:
         """Returns the class as a node label.
         Override to palce other attributes within this tag."""
         return self.__class__.__name__
+
+    def to_dot(self, buffer: list[str]):
+        """Add relevant dot code to this node"""
+        this_node = self.dot_id()
+        buffer.append(f'{this_node}[label="{LB}{self.dot_label()}{RB}"]') # where LB is left
+        # branch and RB is the right branch
+        for child in flatten(self.children):
+            buffer.append(f"{this_node} -> {child.dot_id()};")
+            child.to_dot(buffer)
+
 class Sum(ASTNode):
     pass
 
