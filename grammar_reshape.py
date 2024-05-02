@@ -8,6 +8,9 @@ log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
 
 class ExprTransformer(lark.Transformer):
+    def __init__(self, file=None):
+        if file is not None:
+            
     def INT(self, data):
         """ Data is the stored value passed as an argument. This must
         be an int"""
