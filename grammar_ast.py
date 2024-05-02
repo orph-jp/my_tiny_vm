@@ -13,6 +13,28 @@ class ASTNode:
         else:
             raise NotImplementedError(f"{this_class} is missing a constructor method")
 
+    def walk(self, visit_state, pre_visit: Callable=ignore, post_visit:Callable=ignore):
+        pre_visit(self, visit_state)
+        for child in flatten(self.children):
+            log.debug(f"Visiting ASTNode of class {child.__class__.__name__}")
+            try:
+                child.walk(visit_state, pre_visit, post_visit)
+            except Exception as e:
+                log.error(f"Failed walking {self.__class__.__name__} to {child.__class__.__name__}")
+        post_visit(self, visit_state)
+
+    # Gather method signatures onto the stack
+    def method_table_visit(self, visit_state: dict):
+        ignore(self, visit_state)
+
+    def r_eval(self, buffer: list[str]):
+        """Evaluate for value, i.e., generate code that will
+        result in evaluating an expression of some kind for a value.
+        Always increases stack depth by 1."""i
+        raise NotImplementedError(f"r_eval not implemented for node type {self.__class__.__name__}") # because this is called by self.__class__.__name__ instance and will redirected to Abstract class
+
+    def c_eval(self, buffer: list[str]):
+        raise NotImplementedError(f"c_eval not implemented for node type {self.__class__.__name__}")
 class Sum(ASTNode):
     pass
 
