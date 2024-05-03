@@ -26,26 +26,25 @@ class ExprTransformer(lark.Transformer):
         log.debug(f"Processing 'int' with {children}")
         return children[0]
 
-    def plus(self, children):
-        """ This method will be different than the lark how-to turtorial"""
-        log.debug(f"Processing 'plus' with {children}")
-        left, right = children
-        return grammar_ast.Plus(left, right)
+    def plus(self, e):
+        log.debug("-> plus")
+        left, right = e
+        return grammar_ast.MethodCallNode("PLUS", left, [ right ])
 
-    def minus(self, children):
-        log.debug(f"Processing 'minus' with {children}")
-        left, right = children
-        return grammar_ast.Minus(left, right)
+    def minus(self, e):
+        log.debug("-> minus")
+        left, right = e
+        return grammar_ast.MethodCallNode("MINUS", left, [ right ])
 
-    def times(self, children):
-        log.debug(f"Processing 'times' with {children}")
-        left, right = children
-        return grammar_ast.Times(left, right)
+    def times(self, e):
+        log.debug("-> times")
+        left, right = e
+        return grammar_ast.MethodCallNode("TIMES", left, [ right ])
 
-    def minus(self, children):
-        log.debug(f"Processing 'divide' with {children}")
-        left, right = children
-        return grammar_ast.Divide(left, right)
+    def divide(self, e):
+        log.debug("-> divide")
+        left, right = e
+        return grammar_ast.MethodCallNode("DIVIDE", left, [ right ])
 
     def sum(self, children):
         """The base case, factor -> int."""

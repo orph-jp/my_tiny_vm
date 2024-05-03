@@ -62,6 +62,30 @@ class ASTNode:
             buffer.append(f"{this_node} -> {child.dot_id()};")
             child.to_dot(buffer)
 
+class AssignmentNode(ASTNode):
+    def __init__(self, lhs, decl_type, rhs):
+        self.decl_type = decl_type
+        self.lhs = lhs
+        self.rhs = rhs
+        self.children = [self.rhs]
+
+    def __str__(self):
+        if self.decl_type is None:
+            return f"{self.lhs} = {self.rhs};"
+        else:
+            return f"{self.lhs}: {self.decl_type} = {self.rhs};"
+
+    def gen_code(self, buffer: list[str]):
+        """Evaluate rhs, store in lhs"""
+        buffer += self.rhs.r_eval()
+        buffer.append(f"store {self.lhs}")
+
+class VariableRefNode(ASTNode):
+    """Reference to a variable, i.e., x in this.x"""
+    def __init__(self, name: str):
+        assert isinstance(name, str)
+
+
 class Sum(ASTNode):
     pass
 
