@@ -62,6 +62,29 @@ class ASTNode:
             buffer.append(f"{this_node} -> {child.dot_id()};")
             child.to_dot(buffer)
 
+class MethodCallNode(ASTNode):
+    """This class classifies nodes that result from source code that
+    specifies a method call. Subsequently the .asm will look similar to the following:"""
+    def __init__(self, name: str, receiver: ASTNode, actuals: list[ASTNode]):
+        super().__init__()
+        self.name = name
+        self.receiver = receiver
+        self.actuals = actuals
+        if self.actuals == [ None ]:
+            self.actuals = []
+        self.children = [ self.receiver ] + self.actuals # must be the same as .extend()
+
+    def __str__(self):
+        return str(self.expr) + "// bare expression"
+
+class BareExprNode(ASTNode):
+    def __init__(self, expr, ASTNode):
+        super().__init__()
+        self.expr = expr
+        self.children = [ expr ] 
+    
+    def __str__(self):
+            
 class AssignmentNode(ASTNode):
     def __init__(self, lhs, decl_type, rhs):
         self.decl_type = decl_type

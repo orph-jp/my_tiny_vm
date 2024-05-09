@@ -11,7 +11,7 @@ def main():
     gram_file = open("grammar.lark", "r")
     parser = lark.Lark(gram_file, parser="lalr")
 
-    src_file = open("EXGrammar.txt", "r")
+    src_file = open("examples/EXGrammar.txt", "r")
     src_text = "".join(src_file.readlines())
     concete = parser.parse(src_text)
     print("Parse tree (concrete syntax):")

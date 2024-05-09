@@ -12,6 +12,25 @@
      | term "/" int -> divide
      | int
 
+?stmt: assignment
+     | bare_expression
+
+assignment: ident [";" ident] "=" expr
+
+block: (stmt )*
+
+?stmt: assignment ";"
+    | bare_expression ";"
+    | ifstmt
+
+ifstmt: "if" expr "{" block "}" elpart
+
+?elpart: "elif" expr "{"  block "}" elpart -> ifstmt
+    | "else" "{" block "}"
+    | -> block
+
+?elpart 
+actuals: [ expr ("," expr)*]
 %import common.WS
 %import common.WS_INLINE
 %import common.INT -> int

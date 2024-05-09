@@ -1,0 +1,16 @@
+/* Initialization check shopuld fail specifically 
+ * on variable booboo.
+ */
+
+earth = 22;
+if earth < 30 {
+    wind = 14;
+    fire = 18;
+    booboo = 24;
+} else {
+    fire = 27;
+    wind - 13;
+}
+earth = wind + file;
+booboo = booboo + wind;:w
+
