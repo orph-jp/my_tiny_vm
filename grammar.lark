@@ -29,8 +29,8 @@ ifstmt: "if" expr "{" block "}" elpart
     | "else" "{" block "}"
     | -> block
 
-?elpart 
 actuals: [ expr ("," expr)*]
+
 %import common.WS
 %import common.WS_INLINE
 %import common.INT -> int

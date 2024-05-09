@@ -75,7 +75,16 @@ class MethodCallNode(ASTNode):
         self.children = [ self.receiver ] + self.actuals # must be the same as .extend()
 
     def __str__(self):
-        return str(self.expr) + "// bare expression"
+        actuals = ",".join(str(actual) for actual in self.actuals)
+        return f"{self.receiver}.{self.name}({actuals})"
+
+    def dot_label(self) -> str:
+        return f"Method Call|{self.name}"
+
+    def r_eval(self, buffer: list[str]):
+        for actual in self.actuals:
+            actual.r_eval(buffer)
+        self.receiver.r_eval(buffer)
 
 class BareExprNode(ASTNode):
     def __init__(self, expr, ASTNode):
