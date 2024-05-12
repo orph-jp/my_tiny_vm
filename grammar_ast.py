@@ -30,7 +30,7 @@ class ASTNode:
     def r_eval(self, buffer: list[str]):
         """Evaluate for value, i.e., generate code that will
         result in evaluating an expression of some kind for a value.
-        Always increases stack depth by 1."""i
+        Always increases stack depth by 1."""
         raise NotImplementedError(f"r_eval not implemented for node type {self.__class__.__name__}") # because this is called by self.__class__.__name__ instance and will redirected to Abstract class
 
     def c_eval(self, true_branch: str, false_branch: str, buffer: list[str]):
@@ -93,6 +93,7 @@ class BareExprNode(ASTNode):
         self.children = [ expr ] 
     
     def __str__(self):
+        return str(self.expr) + "// bare expression"
             
 class AssignmentNode(ASTNode):
     def __init__(self, lhs, decl_type, rhs):

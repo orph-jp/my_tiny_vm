@@ -1,0 +1,5 @@
+/* An example of type-checking in quack program */
+x = 17;
+y = "a string";
+x = x + y;
+

@@ -1,0 +1,6 @@
+//# A necessary expansion of the "rough-draft" grammar
+//# present within grammar.lark. This is meant to represent the real quack grammar.
+
+?start: program
+
+

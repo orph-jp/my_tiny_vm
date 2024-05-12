@@ -1,0 +1,6 @@
+/* An example of type-checking that is legal within quack */
+x = 17;
+x = x + 3;
+y = "a string";
+y = y + "can be concatenated";
+

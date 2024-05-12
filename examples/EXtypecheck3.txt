@@ -1,0 +1,4 @@
+/* An example of a more-advanced case of type-checking within quack */
+x = 17;
+x = "a string";
+x = x + "but now it's obj and has no PLUS method";
