@@ -1,6 +1,61 @@
 //# A necessary expansion of the "rough-draft" grammar
 //# present within grammar.lark. This is meant to represent the real quack grammar.
 
-?start: program
+?start: program //# returns if matched, or nothing 
 
+program: class * statement *
 
+class: class_signature class_body
+
+class_signature = "class" ident "(" formal_args ")" [ "extends" ident ]
+
+class_body = "{" (statement)* (method)* "}"
+
+method = "def" ident "(" formal_arguments ")" [ ":" ident ] statement_block
+
+statement_block = "{" (statement)* "}"
+
+formal_args = [ ident ":" ident ( "," ident ":" ident)* ]
+
+block: expr ";" //# TODO: What is a block??  
+    | "{" block "}"
+
+statement = "if" r_expr statement_block ("elif" r_expr statement_block)*
+[ "else" statement_block ]
+    | "while" r_expr statement_block
+    | l_expr [":" ident] "=" r_expr ";" -> assign_vars
+
+l_expr = ident
+    | r_expr "." ident
+
+r_expr = string_literal | int_literal | l_expr | r_expr "+"
+    r_expr | r_expr "-" r_expr | r_expr "*" r_expr | r_expr "/" r_expr |
+    "-" r_expr | "(" r_expr ")"
+//# room for improvement by defining "op" non terminal
+
+expression: assignment
+    |  
+
+?factor: atom
+    | factor "." ident "(" actuals ")" -> method_call //# actuals are the arguments to a func
+    | ident "(" actuals ")" -> constructor_call
+
+actuals: [ expr ("," expr)*]
+
+?atom: "(" expr ")"
+    | var_ref
+    | int_const
+    | str_const
+
+int_cost: INT
+
+?expr: expr term ";" -> expr_more
+     | term ";"      -> expr_one
+
+?term: term "+" int -> plus
+     | term "-" int -> minus
+     | term "*" int -> times
+     | term "/" int -> divide
+     | int
+
+%import common.INT -> int
