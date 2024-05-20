@@ -7,9 +7,11 @@ program: class * statement *
 
 class: class_signature class_body
 
+ident: [A-Za-z][A-Za-z_0-9]* //# the names we provide functions, vars, etc
+
 class_signature = "class" ident "(" formal_args ")" [ "extends" ident ]
 
-class_body = "{" (statement)* (method)* "}"
+class_body = "{" (statement)* (method)* "}" //# the body containing the class methods and data members
 
 method = "def" ident "(" formal_arguments ")" [ ":" ident ] statement_block
 
@@ -24,13 +26,26 @@ statement = "if" r_expr statement_block ("elif" r_expr statement_block)*
 [ "else" statement_block ]
     | "while" r_expr statement_block
     | l_expr [":" ident] "=" r_expr ";" -> assign_vars
+    | "return" [ r_expr ] ";"
+    | typecase
 
+typecase = "typecase" r_expr "{" (type_alternative)* "}" //# typecase used as switch-case in C but
+							//#  only categorizes by type
+
+type_alternative = ident ":" ident statement_block
 l_expr = ident
     | r_expr "." ident
 
-r_expr = string_literal | int_literal | l_expr | r_expr "+"
-    r_expr | r_expr "-" r_expr | r_expr "*" r_expr | r_expr "/" r_expr |
-    "-" r_expr | "(" r_expr ")"
+r_expr = string_literal | int_literal | l_expr 
+    | r_expr "+" r_expr | r_expr "-" r_expr | r_expr "*" r_expr | r_expr "/" r_expr
+    | "-" r_expr | "(" r_expr ")"
+    | r_expr "==" r_expr | r_expr "<=" r_expr | r_expr "<" r_expr 
+    | r_expr ">=" r_expr | r_expr ">" r_expr | r_expr "and" r_expr | r_expr "or" r_expr  | "not" r_expr
+    | r_expr "." ident "(" actual_args ")" 
+    | ident "(" actual_args ")"
+
+actual args = [ r_expr ("," r_expr)* ]
+
 //# room for improvement by defining "op" non terminal
 
 expression: assignment
