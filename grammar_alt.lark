@@ -7,7 +7,7 @@ program: class * statement *
 
 class: class_signature class_body
 
-ident: [A-Za-z][A-Za-z_0-9]* //# the names we provide functions, vars, etc
+ident: [A-Za-z]+[A-Za-z_0-9]* //# the names we provide functions, vars, etc
 
 class_signature = "class" ident "(" formal_args ")" [ "extends" ident ]
 
@@ -15,7 +15,7 @@ class_body = "{" (statement)* (method)* "}" //# the body containing the class me
 
 method = "def" ident "(" formal_arguments ")" [ ":" ident ] statement_block
 
-statement_block = "{" (statement)* "}"
+statement_block = "{" (statement)* "}" //# defines all instances of { something } in quack 
 
 formal_args = [ ident ":" ident ( "," ident ":" ident)* ]
 
@@ -34,7 +34,8 @@ typecase = "typecase" r_expr "{" (type_alternative)* "}" //# typecase used as sw
 
 type_alternative = ident ":" ident statement_block
 l_expr = ident
-    | r_expr "." ident
+    | r_expr "." ident //# this is for cases wherein an assignment is made to what we typically would
+		       //#  categorize as a "right-hand" expression: foo.findmax(this.children).weight = 42;
 
 r_expr = string_literal | int_literal | l_expr 
     | r_expr "+" r_expr | r_expr "-" r_expr | r_expr "*" r_expr | r_expr "/" r_expr
@@ -43,6 +44,10 @@ r_expr = string_literal | int_literal | l_expr
     | r_expr ">=" r_expr | r_expr ">" r_expr | r_expr "and" r_expr | r_expr "or" r_expr  | "not" r_expr
     | r_expr "." ident "(" actual_args ")" 
     | ident "(" actual_args ")"
+
+string_literal = "\0" | "\b" | "\t" | "\n" | "\r" | "\f" | "\"" | "\\" 
+
+int_literal = INT //# as the quack guide explains, -99 is NOT an int_literal.
 
 actual args = [ r_expr ("," r_expr)* ]
 
@@ -62,15 +67,15 @@ actuals: [ expr ("," expr)*]
     | int_const
     | str_const
 
-int_cost: INT
+int_const: INT
 
 ?expr: expr term ";" -> expr_more
      | term ";"      -> expr_one
 
-?term: term "+" int -> plus
-     | term "-" int -> minus
-     | term "*" int -> times
-     | term "/" int -> divide
+?term: term "+" INT -> plus
+     | term "-" INT -> minus
+     | term "*" INT -> times
+     | term "/" INT -> divide
      | int
 
-%import common.INT -> int
+%import common.INT
