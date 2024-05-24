@@ -1,7 +1,9 @@
 //# Grammar and parser for the infix notation of basic calculator
 //# ================
 
-?start: expr
+?start: program
+
+program: expr
 
 ?expr: expr term ";" -> expr_more
      | term ";"      -> expr_one
@@ -11,25 +13,6 @@
      | term "*" int -> times
      | term "/" int -> divide
      | int
-
-?stmt: assignment
-     | bare_expression
-
-assignment: ident [";" ident] "=" expr
-
-block: (stmt )*
-
-?stmt: assignment ";"
-    | bare_expression ";"
-    | ifstmt
-
-ifstmt: "if" expr "{" block "}" elpart
-
-?elpart: "elif" expr "{"  block "}" elpart -> ifstmt
-    | "else" "{" block "}"
-    | -> block
-
-actuals: [ expr ("," expr)*]
 
 %import common.WS
 %import common.WS_INLINE

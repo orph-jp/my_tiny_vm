@@ -13,7 +13,10 @@ class ASTNode:
         else:
             raise NotImplementedError(f"{this_class} is missing a constructor method")
 
-    def walk(self, visit_state, pre_visit: Callable=ignore, post_visit:Callable=ignore):
+    def walk(self, visit_state, pre_visit, post_visit): 
+        """NOTE: Normally here, the method calls for pre_vist and post_visit are to be ignored as they
+        are overwritten in method_table_vist, which does take action in a few nodes. We will
+        come back here to add this Callable=ignore tag later"""
         pre_visit(self, visit_state)
         for child in flatten(self.children):
             log.debug(f"Visiting ASTNode of class {child.__class__.__name__}")
@@ -22,6 +25,14 @@ class ASTNode:
             except Exception as e:
                 log.error(f"Failed walking {self.__class__.__name__} to {child.__class__.__name__}")
         post_visit(self, visit_state)
+
+    def post_visit(self, visit_state):
+        """For tree, traverse left subtree (recursive call), then traverse right subtree. Then visit root"""
+        pass
+
+    def pre_visit(self, visit_state):
+        """For tree, visit root, then traverse left subtree (recursive call), then traverse right subtree."""
+        pass
 
     # Gather method signatures onto the stack
     def method_table_visit(self, visit_state: dict):
@@ -119,6 +130,7 @@ class FieldRefNode(ASTNode):
     def __init__(self, name: str):
         assert isinstance(name, str)
     """TODO: How to generate code and .PRINT method? Do we need this?""" 
+
 class Sum(ASTNode):
     pass
 
