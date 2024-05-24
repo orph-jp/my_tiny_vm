@@ -103,27 +103,27 @@ class AssignmentNode(ASTNode):
         self.children = [self.rhs]
 
     def __str__(self):
-        if self.decl_type is None:
+        if self.decl_type is None: # e.g. var_1 = 20; 
             return f"{self.lhs} = {self.rhs};"
         else:
             return f"{self.lhs}: {self.decl_type} = {self.rhs};"
 
     def gen_code(self, buffer: list[str]):
         """Evaluate rhs, store in lhs"""
-        buffer += self.rhs.r_eval()
-        buffer.append(f"store {self.lhs}")
+        buffer += self.rhs.r_eval() # But we havent specified rhs to necessarily have a r_eval method?
+                                    # this will store each character as one new entry at the end of the list
+        buffer.append(f"store {self.lhs}") # i.e. "store Int:x" 
 
-class VariableRefNode(ASTNode):
+class FieldRefNode(ASTNode):
     """Reference to a variable, i.e., x in this.x"""
     def __init__(self, name: str):
         assert isinstance(name, str)
-
-
+    """TODO: How to generate code and .PRINT method? Do we need this?""" 
 class Sum(ASTNode):
     pass
 
 
-class Int(Sum):
+class Int_literal(Sum):
     """Leaves of a sum are integer literals."""
     def __init__(self, value: int):
         self.value = value
@@ -133,6 +133,17 @@ class Int(Sum):
 
     def __repr__(self):
         return repr(self.value)
+
+class Str_literal(ASTNode):
+    """String node"""
+    def __init__(self, string: str):
+        self.chars = string
+
+    def __str__(self):
+        return f"{self.chars}"
+
+    def __repr__(self):
+        return repr(self.chars)
 
 class BinOp(Sum):
     """Represents addition or subtraction"""
@@ -165,13 +176,12 @@ class Divide(BinOp):
         super().__init__('/', left, right)
 
 class Expr(ASTNode):
-    """A sequence of sums. We could represent it in a treelike manner
-    to better match a left-recursive grammar, but we'll instead represent
-    it as a list of sums to illustrate how we can apply a lark transformer
-    to reshape it"""
+    """An expresion is the left or right hand side of a traditional statement, and preceeds a non-termina
+    in the derivation of the grammar"""
 
-    def __init__(self):
+    def __init__(self, side: str):
         self.sums: list[Sum] = []
+        self.side = side
 
     def append(self, sum: Sum):
         self.sums.append(sum)

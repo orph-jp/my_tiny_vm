@@ -8,15 +8,17 @@ log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
 
 class ExprTransformer(lark.Transformer):
-    def __init__(self, file=None):
+    def __init__(self, file_path=None):
+        # is this where I wish to include the file output? if file is not None:
         if file is not None:
-            
+            with open(file_path, 'w'):
+                write(
     def INT(self, data):
         """ Data is the stored value passed as an argument. This must
         be an int"""
         log.debug(f"Processing token INT with {data}")
         val = int(data.value)
-        ast_node = grammar_ast.Int(val)
+        ast_node = grammar_ast.Int_literal(val)
         log.debug(f"Processed token into value {ast_node}")
         return ast_node
 
@@ -50,6 +52,12 @@ class ExprTransformer(lark.Transformer):
         """The base case, factor -> int."""
         log.debug(f"Processing sum base case {children}")
         return children[0]
+
+    def ifstmt(self, e):
+        """ifstmt production as referenced by grammar.lark"""
+        log.debug("-> ifstmt")
+        cond, thenpart, elspart = e
+        return ast.IfStmtNode(cond, thenpart, elsepart)
 
     def expr_one(self, children):
         """This will always be the first reduction to expr"""

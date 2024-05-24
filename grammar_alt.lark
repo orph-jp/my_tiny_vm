@@ -7,7 +7,7 @@ program: class * statement *
 
 class: class_signature class_body
 
-ident: [A-Za-z]+[A-Za-z_0-9]* //# the names we provide functions, vars, etc
+ident: ^[A-Za-z_][A-Za-z0-9_]*$ //# the names we provide functions, vars, etc
 
 class_signature = "class" ident "(" formal_args ")" [ "extends" ident ]
 
