@@ -12,10 +12,9 @@ def main():
     gram_file = open("grammar.lark", "r")
     parser = lark.Lark(gram_file, parser="lalr")
 
-    # Open an example file for reading and create buffer
+    # Open an example file for reading
     src_file = open("examples/EXGrammar.txt", "r")
     src_text = "".join(src_file.readlines())
-    buffer = []
     concete = parser.parse(src_text)
     print("Parse tree (concrete syntax):")
     print(concrete.pretty())
@@ -23,6 +22,9 @@ def main():
     # TODO: Include the file to write in the initialization of the transformer
     transformer = grammar_reshape.ExprTransformer()
     ast = transformer.transform(concrete)
+    buffer = [] # create buffer contains asm instructions
+    ast.gen_code(buffer) # gen_code on root node
+    print("\n".join(buffer)) 
     print(ast)
     print(f"as {repr(ast)}")
 
