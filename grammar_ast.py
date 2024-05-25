@@ -117,6 +117,7 @@ class MethodCallNode(ASTNode):
         for actual in self.actuals:
             actual.r_eval(buffer)
         self.receiver.r_eval(buffer)
+        buffer.append(f"call Int:{self.name}")
 
 class BareExprNode(ASTNode):
     def __init__(self, expr: ASTNode):

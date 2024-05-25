@@ -12,7 +12,8 @@ class ExprTransformer(lark.Transformer):
         # is this where I wish to include the file output? if file is not None:
         if file is not None:
             with open(file_path, 'w'):
-                pass # like write()...
+                write(".class: Main") # like wr
+                # write(buffer)
 
     def program(self, e):
         log.debug("->program")
