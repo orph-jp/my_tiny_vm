@@ -12,7 +12,12 @@ class ExprTransformer(lark.Transformer):
         # is this where I wish to include the file output? if file is not None:
         if file is not None:
             with open(file_path, 'w'):
-                write(
+                pass # like write()...
+
+    def program(self, e):
+        log.debug("->program")
+        classes, main_block = e # recall e is just the relevant data for initializing the proper node type.
+        return grammar_ast.ProgramNode(classes, main_block)
     def INT(self, data):
         """ Data is the stored value passed as an argument. This must
         be an int. This is a terminal symbol, i.e., an int-const"""

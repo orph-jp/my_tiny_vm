@@ -73,6 +73,27 @@ class ASTNode:
             buffer.append(f"{this_node} -> {child.dot_id()};")
             child.to_dot(buffer)
 
+class ProgramNode(ASTNode):
+    """The root node of every abstract syntax tree::"""
+    def __init__(self, classes: List[ASTNode],  main_block: ASTNode):
+        super().__init__() # as always, initialize the super class
+        self.classes = classes 
+        main_class = ClassNode("$Main", [], "Obj", [], main_block) # main is a class, in essence. Obj is default parent class.
+        self.classes.append(main_class) # so it becomes the first entry into self.classes
+        self.children = self.classes # descendants of the main class is everything else in the tree--append just main now
+
+    def __str__(self) -> str:
+        return "\n".join([str(c) for c in self.classes]) # returns a string seperated by newline of all classes
+
+    def gen_code(self, buffer: list[str]):
+        for clazz in self.classes:
+            clazz.gen_code(buffer) # this will be .class <var>:Obj
+
+class ClassNode(ASTNode):
+    """Class ::= class_signature class_body"""
+    #def __init__(self, class_sig: str, constructor_args: List[ASTNode], superclass: str,  class_body: str):
+        # super().__init__()
+    pass
 class MethodCallNode(ASTNode):
     """This class classifies nodes that result from source code that
     specifies a method call. Subsequently the .asm will look similar to the following:"""
