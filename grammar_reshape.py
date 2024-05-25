@@ -15,7 +15,7 @@ class ExprTransformer(lark.Transformer):
                 write(
     def INT(self, data):
         """ Data is the stored value passed as an argument. This must
-        be an int"""
+        be an int. This is a terminal symbol, i.e., an int-const"""
         log.debug(f"Processing token INT with {data}")
         val = int(data.value)
         ast_node = grammar_ast.Int_literal(val)
@@ -23,14 +23,14 @@ class ExprTransformer(lark.Transformer):
         return ast_node
 
     def int(self, children):
-        """int, unlike INT, is a non-=terminal symbol. It has
-        a single child, which will hav ebeen transformed by the INT method above."""
+        """int, unlike INT, is a non-terminal symbol, i.e., not an int-const. It has
+        a single child, which will have been transformed by the INT method above."""
         log.debug(f"Processing 'int' with {children}")
         return children[0]
 
     def plus(self, e):
         log.debug("-> plus")
-        left, right = e
+        left, right = e # left, right are the operands
         return grammar_ast.MethodCallNode("PLUS", left, [ right ])
 
     def minus(self, e):

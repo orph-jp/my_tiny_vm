@@ -98,16 +98,22 @@ class MethodCallNode(ASTNode):
         self.receiver.r_eval(buffer)
 
 class BareExprNode(ASTNode):
-    def __init__(self, expr, ASTNode):
+    def __init__(self, expr: ASTNode):
         super().__init__()
         self.expr = expr
         self.children = [ expr ] 
     
     def __str__(self):
         return str(self.expr) + "// bare expression"
+
+    def gen_code(self, buffer: list[str]):
+        self.expr.r_eval(buffer)
+        buffer.append("pop") # pop from the call stack the evaluated expr
             
 class AssignmentNode(ASTNode):
+    """An assignment node is for instance int x = 3."""
     def __init__(self, lhs, decl_type, rhs):
+        super().__init__()
         self.decl_type = decl_type
         self.lhs = lhs
         self.rhs = rhs
@@ -121,9 +127,14 @@ class AssignmentNode(ASTNode):
 
     def gen_code(self, buffer: list[str]):
         """Evaluate rhs, store in lhs"""
-        buffer += self.rhs.r_eval() # But we havent specified rhs to necessarily have a r_eval method?
-                                    # this will store each character as one new entry at the end of the list
+        buffer += self.rhs.r_eval() # this will store each character as one new entry at the end of the list based on __repr__
+                                    # of rhs type (in r_eval).
         buffer.append(f"store {self.lhs}") # i.e. "store Int:x" 
+
+    def gather_locals_visit(self, visit_state: set):
+        """For an assignment x = exp, x may be a new local variable"""
+        log.debug(f"{self.__class__.__name__}Gathering variable {self.lhs}")
+        visit_state.add(self.lhs)
 
 class FieldRefNode(ASTNode):
     """Reference to a variable, i.e., x in this.x"""
@@ -188,7 +199,7 @@ class Divide(BinOp):
         super().__init__('/', left, right)
 
 class Expr(ASTNode):
-    """An expresion is the left or right hand side of a traditional statement, and preceeds a non-termina
+    """An expresion is the left or right hand side of a traditional statement, and preceeds a non-terminal
     in the derivation of the grammar"""
 
     def __init__(self, side: str):
