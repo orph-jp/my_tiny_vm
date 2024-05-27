@@ -13,12 +13,18 @@ class ExprTransformer(lark.Transformer):
         if file is not None:
             with open(file_path, 'w'):
                 write(".class: Main") # like wr
+
                 # write(buffer)
 
     def program(self, e):
         log.debug("->program")
         classes, main_block = e # recall e is just the relevant data for initializing the proper node type.
         return grammar_ast.ProgramNode(classes, main_block)
+
+    def clazz(self, e):
+        log.debug("->clazz")
+        class_sig, constructor_args, superclass, methods, block = e
+        grammar_ast.ClassNode(class_sig, constructor_args, superclass, methods, block)
     def INT(self, data):
         """ Data is the stored value passed as an argument. This must
         be an int. This is a terminal symbol, i.e., an int-const"""

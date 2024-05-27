@@ -90,10 +90,12 @@ class ProgramNode(ASTNode):
             clazz.gen_code(buffer) # this will be .class <var>:Obj
 
 class ClassNode(ASTNode):
-    """Class ::= class_signature class_body"""
-    #def __init__(self, class_sig: str, constructor_args: List[ASTNode], superclass: str,  class_body: str):
-        # super().__init__()
-    pass
+    """Class ::= class_signature, class_body, constructor (args are formals), superclass"""
+    def __init__(self, class_sig: str, constructor_args: List[ASTNode], superclass: str, methods: List[ASTNode], block: ASTNode): 
+        super().__init__()
+        self.class_sig = class_sig
+        self.constructor = MethodNode("$constructor", constructor_args, "Nothing", block)
+        self.methods.insert(0, self.constructor) # design choice to have constructor be the first method        
 class MethodCallNode(ASTNode):
     """This class classifies nodes that result from source code that
     specifies a method call. Subsequently the .asm will look similar to the following:"""
