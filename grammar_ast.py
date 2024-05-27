@@ -4,6 +4,9 @@ logging.basicConfig()
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
 
+LB = '}'
+RB = '{'
+
 class ASTNode:
     """Abstract base class for abstract sequence of patterns"""
     def __init__(self):
@@ -95,8 +98,20 @@ class ClassNode(ASTNode):
         super().__init__()
         self.class_sig = class_sig
         self.constructor = MethodNode("$constructor", constructor_args, "Nothing", block)
+        self.methods = methods
         self.methods.insert(0, self.constructor) # design choice to have constructor be the first method        
-class MethodCallNode(ASTNode):
+    def __str__(self):
+        """First we must join the seperate elements before python's iterative magic can produce the string representation  """
+        constargs = ", ".join([str(arg) for arg in self.constructor.actuals]) # str(arg) will do the ASTNode str repr.
+        method = "\n".join(f"{method}\n" for method in self.methods)
+        return f""" class {self.name}({constargs}){LB}
+            {methods} /* statements as a constructor */ {self.constructor} {RB}
+            /* end class {self.class_sig} */"""
+        # TODO: Reverse-engineer the corresponding parameter classes and methods
+        # TODO: Make sure this is correct
+
+    # TODO: method_table_visit
+class MethodNode(ASTNode):
     """This class classifies nodes that result from source code that
     specifies a method call. Subsequently the .asm will look similar to the following:"""
     def __init__(self, name: str, receiver: ASTNode, actuals: list[ASTNode]):
@@ -165,6 +180,14 @@ class FieldRefNode(ASTNode):
     def __init__(self, name: str):
         assert isinstance(name, str)
     """TODO: How to generate code and .PRINT method? Do we need this?""" 
+
+class BooleanExprNode(ASTNode):
+    """Stores a boolean expression"""
+    def __init__(self, cond):
+        self.cond = cond
+
+    def __str__(self):
+        return f"{self.cond}"
 
 class Sum(ASTNode):
     pass
