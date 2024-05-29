@@ -1,4 +1,6 @@
 """Abstract syntax representation of a sequence of tokens (pattern)"""
+from typing import List
+from collections.abc import Callable
 import logging
 logging.basicConfig()
 log = logging.getLogger(__name__)
@@ -16,10 +18,9 @@ class ASTNode:
         else:
             raise NotImplementedError(f"{this_class} is missing a constructor method")
 
-    def walk(self, visit_state, pre_visit, post_visit): 
+    def walk(self, visit_state, pre_visit:Callable=ignore, post_visit:Callable=ignore): 
         """NOTE: Normally here, the method calls for pre_vist and post_visit are to be ignored as they
-        are overwritten in method_table_vist, which does take action in a few nodes. We will
-        come back here to add this Callable=ignore tag later"""
+        are overwritten in method_table_vist, which does take action in a few nodes."""
         pre_visit(self, visit_state)
         for child in flatten(self.children):
             log.debug(f"Visiting ASTNode of class {child.__class__.__name__}")

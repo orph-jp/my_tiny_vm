@@ -25,6 +25,7 @@ class ExprTransformer(lark.Transformer):
         log.debug("->clazz")
         class_sig, constructor_args, superclass, methods, block = e
         grammar_ast.ClassNode(class_sig, constructor_args, superclass, methods, block)
+
     def INT(self, data):
         """ Data is the stored value passed as an argument. This must
         be an int. This is a terminal symbol, i.e., an int-const"""
@@ -70,6 +71,12 @@ class ExprTransformer(lark.Transformer):
         log.debug("-> ifstmt")
         cond, thenpart, elspart = e
         return ast.IfStmtNode(cond, thenpart, elsepart)
+
+    def cond(self, e):
+        """cond production as  referenced by grammar.lark
+        e must therefore already be a grammar_ast.ASTNode"""
+        log.debug("-> cond")
+        return e
 
     def expr_one(self, children):
         """This will always be the first reduction to expr"""

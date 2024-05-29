@@ -21,7 +21,7 @@ def main():
 
     # TODO: Include the file to write in the initialization of the transformer
     transformer = grammar_reshape.ExprTransformer()
-    ast = transformer.transform(concrete)
+    ast: grammar_ast.ASTNode = transformer.transform(concrete)
     buffer = [] # create buffer contains asm instructions
     ast.gen_code(buffer) # gen_code on root node
     print("\n".join(buffer)) 
