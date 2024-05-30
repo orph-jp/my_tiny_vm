@@ -13,6 +13,7 @@ class ASTNode:
     """Abstract base class for abstract sequence of patterns"""
     def __init__(self):
         this_class = self.__class__.__name__
+        self.children = []
         if this_class == "ASTNode":
             raise NotImplementedError("ASTNode is an abstract class and should not be instantiated")
         else:
@@ -36,6 +37,9 @@ class ASTNode:
 
     def pre_visit(self, visit_state):
         """For tree, visit root, then traverse left subtree (recursive call), then traverse right subtree."""
+        pass
+
+    def ignore(self):
         pass
 
     # Gather method signatures onto the stack
@@ -116,6 +120,11 @@ class MethodNode(ASTNode):
     """This class classifies nodes that result from source code that
     specifies a method call. Subsequently the .asm will look similar to the following:"""
     def __init__(self, name: str, receiver: ASTNode, actuals: list[ASTNode]):
+        """For reference: the formal is the actual variable1 used in parameters in the method def.
+        Return is the object that is returned by the method.
+        Receiver is the actual instance of the class that has called the method.
+        Actuals is the actual value or variable passed in to the method when it is called.
+        """
         super().__init__()
         self.name = name
         self.receiver = receiver
@@ -125,8 +134,8 @@ class MethodNode(ASTNode):
         self.children = [ self.receiver ] + self.actuals # must be the same as .extend()
 
     def __str__(self):
-        actuals = ",".join(str(actual) for actual in self.actuals)
-        return f"{self.receiver}.{self.name}({actuals})"
+        actuals_str = ",".join(str(actual) for actual in self.actuals)
+        return f"Method Call|{self.name}"
 
     def dot_label(self) -> str:
         return f"Method Call|{self.name}"

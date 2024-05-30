@@ -1,26 +1,23 @@
 //# A necessary expansion of the "rough-draft" grammar
 //# present within grammar.lark. This is meant to represent the real quack grammar.
-
+// This grammar is basically a replica of what is detailed in quackgrammar.pdf
 ?start: program //# returns if matched, or nothing 
 
-program: class * statement *
+program: (class)* (statement)* -> program
 
-class: class_signature class_body
+class: class_signature class_body -> clazz
 
-ident: ^[A-Za-z_][A-Za-z0-9_]*$ //# the names we provide functions, vars, etc
+ident: CNAME //# the names we provide functions, vars, etc 
 
 class_signature = "class" ident "(" formal_args ")" [ "extends" ident ]
 
 class_body = "{" (statement)* (method)* "}" //# the body containing the class methods and data members
 
-method = "def" ident "(" formal_arguments ")" [ ":" ident ] statement_block
+method = "def" ident "(" formal_arguments ")" [ ":" ident ] statement_block -> method
 
 statement_block = "{" (statement)* "}" //# defines all instances of { something } in quack 
 
 formal_args = [ ident ":" ident ( "," ident ":" ident)* ]
-
-block: expr ";" //# TODO: What is a block??  
-    | "{" block "}"
 
 statement = "if" r_expr statement_block ("elif" r_expr statement_block)*
 [ "else" statement_block ]
@@ -37,13 +34,25 @@ l_expr = ident
     | r_expr "." ident //# this is for cases wherein an assignment is made to what we typically would
 		       //#  categorize as a "right-hand" expression: foo.findmax(this.children).weight = 42;
 
-r_expr = string_literal | int_literal | l_expr 
-    | r_expr "+" r_expr | r_expr "-" r_expr | r_expr "*" r_expr | r_expr "/" r_expr
-    | "-" r_expr | "(" r_expr ")"
-    | r_expr "==" r_expr | r_expr "<=" r_expr | r_expr "<" r_expr 
-    | r_expr ">=" r_expr | r_expr ">" r_expr | r_expr "and" r_expr | r_expr "or" r_expr  | "not" r_expr
-    | r_expr "." ident "(" actual_args ")" 
-    | ident "(" actual_args ")"
+r_expr = string_literal
+    | int_literal  
+    | l_expr 
+    | r_expr "+" r_expr
+    | r_expr "-" r_expr 
+    | r_expr "*" r_expr 
+    | r_expr "/" r_expr
+    | "-" r_expr 
+    | "(" r_expr ")"
+    | r_expr "==" r_expr -> bool_eq 
+    | r_expr "<=" r_expr -> bool_leq
+    | r_expr "<" r_expr -> bool_lt
+    | r_expr ">=" r_expr -> bool_geq
+    | r_expr ">" r_expr -> bool_gt
+    | r_expr "and" r_expr -> cond_and
+    | r_expr "or" r_expr  -> cond_or
+    | "not" r_expr -> neg
+    | r_expr "." ident "(" actual_args ")" -> method
+    | ident "(" actual_args ")" -> fieldreference
 
 string_literal = "\0" | "\b" | "\t" | "\n" | "\r" | "\f" | "\"" | "\\" 
 
@@ -53,29 +62,20 @@ actual args = [ r_expr ("," r_expr)* ]
 
 //# room for improvement by defining "op" non terminal
 
-expression: assignment
-    |  
-
 ?factor: atom
     | factor "." ident "(" actuals ")" -> method_call //# actuals are the arguments to a func
     | ident "(" actuals ")" -> constructor_call
 
 actuals: [ expr ("," expr)*]
 
-?atom: "(" expr ")"
-    | var_ref
-    | int_const
-    | str_const
+product: product "*" INT -> times
+    | product "/" INT -> divide
+
+sum: sum "+" product -> plus
+    | sum "-" product -> minus
 
 int_const: INT
-
-?expr: expr term ";" -> expr_more
-     | term ";"      -> expr_one
-
-?term: term "+" INT -> plus
-     | term "-" INT -> minus
-     | term "*" INT -> times
-     | term "/" INT -> divide
-     | int
-
 %import common.INT
+%import common.WS
+%ignore WS
+%import common.CNAME 

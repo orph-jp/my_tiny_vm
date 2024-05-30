@@ -9,7 +9,7 @@ import grammar_reshape
 
 def main():
     # Open up the grammar file to create a parser
-    gram_file = open("grammar.lark", "r")
+    gram_file = open("grammar_alt.lark", "r")
     parser = lark.Lark(gram_file, parser="lalr")
 
     # Open an example file for reading
@@ -18,6 +18,7 @@ def main():
     concete = parser.parse(src_text)
     print("Parse tree (concrete syntax):")
     print(concrete.pretty())
+    
 
     # TODO: Include the file to write in the initialization of the transformer
     transformer = grammar_reshape.ExprTransformer()
@@ -27,6 +28,6 @@ def main():
     print("\n".join(buffer)) 
     print(ast)
     print(f"as {repr(ast)}")
-
+ 
 if __name__ == '__main__':
     main()
