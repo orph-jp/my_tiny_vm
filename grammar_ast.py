@@ -83,6 +83,10 @@ class ASTNode:
             buffer.append(f"{this_node} -> {child.dot_id()};")
             child.to_dot(buffer)
 
+    def diugraph(self, graph=None):
+        """ Used for the graphing of the abstract syntax tree--graphviz"""
+        digraph = Digraph()
+       pass 
 class ProgramNode(ASTNode):
     """The root node of every abstract syntax tree::"""
     def __init__(self, classes: List[ASTNode],  main_block: ASTNode):

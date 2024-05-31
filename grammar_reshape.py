@@ -48,17 +48,17 @@ class ExprTransformer(lark.Transformer):
 
     def minus(self, e):
         log.debug("-> minus")
-        left, right = e
+        left, op, right = e
         return grammar_ast.MethodCallNode("MINUS", left, [ right ])
 
     def times(self, e):
         log.debug("-> times")
-        left, right = e
+        left, op, right = e
         return grammar_ast.MethodCallNode("TIMES", left, [ right ])
 
     def divide(self, e):
         log.debug("-> divide")
-        left, right = e
+        left, op, right = e
         return grammar_ast.MethodCallNode("DIVIDE", left, [ right ])
 
     def sum(self, children):
