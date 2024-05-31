@@ -215,12 +215,12 @@ class IfStmtNode(ASTNode):
         thenpart_label = gen_label("then") # generate label quickly for then part
         elsepart_label = gen_label("else") # generate label quickly for else part
         endif_label = gen_label("endif") # generate label quickly for end part 
-        self.cond.c_eval(thenpart_label, elsepart_label, buffer)
-        buffer.append(f"{thenpart_label}: ")
-        self.thenpart.gen_code(buffer)
+        self.cond.c_eval(thenpart_label, elsepart_label, buffer) # writing assembly with the generated labels
+        buffer.append(f"{thenpart_label}: ") # the label to be in the .asm
+        self.thenpart.gen_code(buffer) # this will write the instructions inside  the if statement block--then part
         buffer.append(f"\tjump {endif_label}")
         buffer.append(f"\t{elsepart_label}: ")
-        self.elsepart.gen_code(buffer)
+        self.elsepart.gen_code(buffer) # this will write the instructions inside the else statement block--part 
         buffer.append(f"{endif_label}: ")
 
     def c_eval(self, true_branch: str, false_branch: str, buffer: list[str]):
