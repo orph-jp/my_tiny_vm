@@ -9,6 +9,8 @@ log.setLevel(logging.DEBUG)
 LB = '}'
 RB = '{'
 
+x = 0
+
 class ASTNode:
     """Abstract base class for abstract sequence of patterns"""
     def __init__(self):
@@ -147,6 +149,7 @@ class MethodNode(ASTNode):
         buffer.append(f"call Int:{self.name}")
 
 class BareExprNode(ASTNode):
+    """x; -- It is just being performed. Or, foo(a,b);"""
     def __init__(self, expr: ASTNode):
         super().__init__()
         self.expr = expr
@@ -198,6 +201,36 @@ class BooleanExprNode(ASTNode):
 
     def __str__(self):
         return f"{self.cond}"
+
+class IfStmtNode(ASTNode):
+    """Node for if statements"""
+    def __init__(self, cond, thenpart, elsepart):
+        self.cond = cond
+        self.thenpart = thenpart
+        self.elsepart = elsepart
+
+    def gen_code(self, buffer: list[str]):
+        """An if statement generates control flow
+        to execute either the 'then' or 'else' part."""
+        thenpart_label = gen_label("then") # generate label quickly for then part
+        elsepart_label = gen_label("else") # generate label quickly for else part
+        endif_label = gen_label("endif") # generate label quickly for end part 
+        self.cond.c_eval(thenpart_label, elsepart_label, buffer)
+        buffer.append(f"{thenpart_label}: ")
+        self.thenpart.gen_code(buffer)
+        buffer.append(f"\tjump {endif_label}")
+        buffer.append(f"\t{elsepart_label}: ")
+        self.elsepart.gen_code(buffer)
+        buffer.append(f"{endif_label}: ")
+
+    def c_eval(self, true_branch: str, false_branch: str, buffer: list[str]):
+        """ 
+        Used for evaluating a comparison, or another boolean method: that is, if x > y (a  comparison-variable
+        reference) or another method call (such as EQUALS) 
+        """
+        self.r_eval(buffer)
+        buffer.append(f"\tjump_ifnot {false_branch}")
+        buffer.append(f"\tjump {true_branch}")
 
 class Sum(ASTNode):
     pass
