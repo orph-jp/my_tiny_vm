@@ -4,7 +4,7 @@ transform to form abstract syntax tree"""
 
 import sys
 import lark
-import grammar_ast
+import grammar_ast_alt
 import grammar_reshape
 
 def main():
@@ -19,7 +19,7 @@ def main():
     print("Parse tree (concrete syntax):")
     print(concrete.pretty())
     
-
+    """
     # TODO: Include the file to write in the initialization of the transformer
     transformer = grammar_reshape.ExprTransformer()
     ast: grammar_ast.ASTNode = transformer.transform(concrete)
@@ -28,6 +28,6 @@ def main():
     print("\n".join(buffer)) 
     print(ast)
     print(f"as {repr(ast)}")
- 
+    """
 if __name__ == '__main__':
     main()

@@ -3,7 +3,7 @@
 // This grammar is basically a replica of what is detailed in quackgrammar.pdf
 ?start: program //# returns if matched, or nothing 
 
-program: (class)* (statement)* -> program
+?program: (class)* (statement)* -> program
 
 class: class_signature class_body -> clazz
 
@@ -68,10 +68,10 @@ actual args = [ r_expr ("," r_expr)* ]
 
 actuals: [ expr ("," expr)*]
 
-product: product "*" INT -> times
+?product: product "*" INT -> times
     | product "/" INT -> divide
 
-sum: sum "+" product -> plus
+?sum: sum "+" product -> plus
     | sum "-" product -> minus
 
 int_const: INT

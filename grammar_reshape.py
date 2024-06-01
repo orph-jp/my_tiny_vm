@@ -1,5 +1,4 @@
-
-import grammar_ast
+import grammar_ast_alt
 import lark
 
 import logging
@@ -19,12 +18,12 @@ class ExprTransformer(lark.Transformer):
     def program(self, e):
         log.debug("->program")
         classes, main_block = e # recall e is just the relevant data for initializing the proper node type.
-        return grammar_ast.ProgramNode(classes, main_block)
+        return grammar_ast_alt.ProgramNode(classes, main_block)
 
     def clazz(self, e):
         log.debug("->clazz")
         class_sig, constructor_args, superclass, methods, block = e
-        grammar_ast.ClassNode(class_sig, constructor_args, superclass, methods, block)
+        grammar_ast_alt.ClassNode(class_sig, constructor_args, superclass, methods, block)
 
     def INT(self, data):
         """ Data is the stored value passed as an argument. This must
@@ -44,22 +43,22 @@ class ExprTransformer(lark.Transformer):
     def plus(self, e):
         log.debug("-> plus")
         left, right = e # left, right are the operands
-        return grammar_ast.MethodCallNode("PLUS", left, [ right ])
+        return grammar_ast_alt.MethodCallNode("PLUS", left, [ right ])
 
     def minus(self, e):
         log.debug("-> minus")
         left, op, right = e
-        return grammar_ast.MethodCallNode("MINUS", left, [ right ])
+        return grammar_ast_alt.MethodCallNode("MINUS", left, [ right ])
 
     def times(self, e):
         log.debug("-> times")
         left, op, right = e
-        return grammar_ast.MethodCallNode("TIMES", left, [ right ])
+        return grammar_ast_alt.MethodCallNode("TIMES", left, [ right ])
 
     def divide(self, e):
         log.debug("-> divide")
         left, op, right = e
-        return grammar_ast.MethodCallNode("DIVIDE", left, [ right ])
+        return grammar_ast_alt.MethodCallNode("DIVIDE", left, [ right ])
 
     def sum(self, children):
         """The base case, factor -> int."""
@@ -70,7 +69,7 @@ class ExprTransformer(lark.Transformer):
         """ifstmt production as referenced by grammar.lark"""
         log.debug("-> ifstmt")
         cond, thenpart, elspart = e
-        return ast.IfStmtNode(cond, thenpart, elsepart)
+        return grammar_ast_alt.IfStmtNode(cond, thenpart, elsepart)
 
     def cond(self, e):
         """cond production as  referenced by grammar.lark
@@ -81,7 +80,7 @@ class ExprTransformer(lark.Transformer):
     def expr_one(self, children):
         """This will always be the first reduction to expr"""
         log.debug(f"Processing exp (base case) with {children}")
-        expr = grammar_ast.Expr()
+        expr = grammar_ast_alt.Expr()
         expr.append(children[0])
         log.debug(f"Exoression is now {expr}")
         return expr
