@@ -214,7 +214,7 @@ class BooleanExprNode(ASTNode):
 
 def gen_label(foo: str):
     label_out  = "label" + str(x)
-    x++
+    x += 1
     return label_out
 
 class IfStmtNode(ASTNode):

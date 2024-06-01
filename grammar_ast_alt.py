@@ -22,33 +22,6 @@ class ASTNode:
         else:
             raise NotImplementedError(f"{this_class} is missing a constructor method")
     
-    def walk(self, visit_state, pre_visit:Callable=ignore, post_visit:Callable=ignore): 
-        """NOTE: Normally here, the method calls for pre_vist and post_visit are to be ignored as they
-        are overwritten in method_table_vist, which does take action in a few nodes."""
-        pre_visit(self, visit_state)
-        for child in flatten(self.children):
-            log.debug(f"Visiting ASTNode of class {child.__class__.__name__}")
-            try:
-                child.walk(visit_state, pre_visit, post_visit)
-            except Exception as e:
-                log.error(f"Failed walking {self.__class__.__name__} to {child.__class__.__name__}")
-        post_visit(self, visit_state)
-
-    def post_visit(self, visit_state):
-        """For tree, traverse left subtree (recursive call), then traverse right subtree. Then visit root"""
-        pass
-
-    def pre_visit(self, visit_state):
-        """For tree, visit root, then traverse left subtree (recursive call), then traverse right subtree."""
-        pass
-
-    def ignore(self):
-        pass
-    
-    # Gather method signatures onto the stack
-    def method_table_visit(self, visit_state: dict):
-        ignore(self, visit_state)
-
     def r_eval(self, buffer: list[str]):
         """Evaluate for value, i.e., generate code that will
         result in evaluating an expression of some kind for a value.
@@ -214,7 +187,7 @@ class BooleanExprNode(ASTNode):
 
 def gen_label(foo: str):
     label_out  = "label" + str(x)
-    x++
+    x += 1
     return label_out
 
 class IfStmtNode(ASTNode):

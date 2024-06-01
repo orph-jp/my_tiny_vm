@@ -9,32 +9,33 @@ class: class_signature class_body -> clazz
 
 ident: CNAME //# the names we provide functions, vars, etc 
 
-class_signature = "class" ident "(" formal_args ")" [ "extends" ident ]
+class_signature: "class" ident "(" formal_args ")" [ "extends" ident ]
 
-class_body = "{" (statement)* (method)* "}" //# the body containing the class methods and data members
+class_body: "{" (statement)* (method)* "}" //# the body containing the class methods and data members
 
-method = "def" ident "(" formal_arguments ")" [ ":" ident ] statement_block -> method
+method: "def" ident "(" formal_arguments ")" [ ":" ident ] statement_block -> method
 
-statement_block = "{" (statement)* "}" //# defines all instances of { something } in quack 
+statement_block: "{" (statement)* "}" //# defines all instances of { something } in quack 
 
-formal_args = [ ident ":" ident ( "," ident ":" ident)* ]
+formal_args: [ ident ":" ident ( "," ident ":" ident)* ]
 
-statement = "if" r_expr statement_block ("elif" r_expr statement_block)*
+statement: "if" r_expr statement_block ("elif" r_expr statement_block)*
 [ "else" statement_block ]
     | "while" r_expr statement_block
     | l_expr [":" ident] "=" r_expr ";" -> assign_vars
     | "return" [ r_expr ] ";"
     | typecase
 
-typecase = "typecase" r_expr "{" (type_alternative)* "}" //# typecase used as switch-case in C but
+typecase: "typecase" r_expr "{" (type_alternative)* "}" //# typecase used as switch-case in C but
 							//#  only categorizes by type
 
-type_alternative = ident ":" ident statement_block
-l_expr = ident
+type_alternative: ident ":" ident statement_block
+
+l_expr: ident
     | r_expr "." ident //# this is for cases wherein an assignment is made to what we typically would
 		       //#  categorize as a "right-hand" expression: foo.findmax(this.children).weight = 42;
 
-r_expr = string_literal
+r_expr: string_literal
     | int_literal  
     | l_expr 
     | r_expr "+" r_expr
@@ -54,11 +55,11 @@ r_expr = string_literal
     | r_expr "." ident "(" actual_args ")" -> method
     | ident "(" actual_args ")" -> fieldreference
 
-string_literal = "\0" | "\b" | "\t" | "\n" | "\r" | "\f" | "\"" | "\\" 
+string_literal: "\0" | "\b" | "\t" | "\n" | "\r" | "\f" | "\"" | "\\" 
 
-int_literal = INT //# as the quack guide explains, -99 is NOT an int_literal.
+int_literal: INT //# as the quack guide explains, -99 is NOT an int_literal.
 
-actual args = [ r_expr ("," r_expr)* ]
+actual_args: [ r_expr ("," r_expr)* ]
 
 //# room for improvement by defining "op" non terminal
 
