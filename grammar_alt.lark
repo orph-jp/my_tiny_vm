@@ -1,6 +1,6 @@
 //# A necessary expansion of the "rough-draft" grammar
 //# present within grammar.lark. This is meant to represent the real quack grammar.
-// This grammar is basically a replica of what is detailed in quackgrammar.pdf
+//# This grammar is basically a replica of what is detailed in quackgrammar.pdf
 ?start: program //# returns if matched, or nothing 
 
 ?program: (class)* (statement)* -> program
@@ -55,7 +55,7 @@ r_expr: string_literal
     | r_expr "." ident "(" actual_args ")" -> method
     | ident "(" actual_args ")" -> fieldreference
 
-string_literal: "\0" | "\b" | "\t" | "\n" | "\r" | "\f" | "\"" | "\\" 
+string_literal: "\0" | "\b" | "\t" | "\n" | "\r" | "\f" | "\" | "\\"  
 
 int_literal: INT //# as the quack guide explains, -99 is NOT an int_literal.
 

@@ -64,7 +64,8 @@ class ASTNode:
             for child in flatten(self.children): # make the list 1 dimensional
                 """Could use isinstance here to verify for debugging that each node in the self.children is 
                 actually a valid type (ASTNode or inherited)"""
-                graph.node(str(child))
+                # graph.node(str(child))
+                child.digraph(graph)
 
 class ProgramNode(ASTNode):
     """The root node of every abstract syntax tree::"""
