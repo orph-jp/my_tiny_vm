@@ -7,13 +7,13 @@
 
 class: class_signature class_body -> clazz
 
-ident: name //# the names we provide functions, vars, etc 
+ident: NAME //# the names we provide functions, vars, etc 
 
 class_signature: "class" ident "(" formal_args ")" [ "extends" ident ]
 
 class_body: "{" (statement)* (method)* "}" //# the body containing the class methods and data members
 
-method: "def" ident "(" formal_arguments ")" [ ":" ident ] statement_block -> method
+method: "def" ident "(" formal_args ")" [ ":" ident ] statement_block -> method
 
 statement_block: "{" (statement)* "}" //# defines all instances of { something } in quack 
 
@@ -57,18 +57,15 @@ r_expr: str_literal
     | ident "(" actual_args ")" -> fieldreference
 
 
-string_literal: "\0" | "\b" | "\t" | "\n" | "\r" | "\f" | "\" | "\\"  
+str_literal: STRING
+
+string_literal: "\0" | "\b" | "\t" | "\n" | "\r" | "\f" | "\\" | " \" " 
 
 int_literal: INT //# as the quack guide explains, -99 is NOT an int_literal.
 
 actual_args: [ r_expr ("," r_expr)* ]
 
 //# room for improvement by defining "op" non terminal
-
-?factor: atom
-    | factor "." ident "(" actuals ")" -> method_call //# actuals are the arguments to a func
-    | ident "(" actual_args ")" -> constructor_call
-
 ?product: product "*" INT -> times
     | product "/" INT -> divide
 
@@ -76,8 +73,8 @@ actual_args: [ r_expr ("," r_expr)* ]
     | sum "-" product -> minus
     | product
 
+%import common._STRING_INNER -> STRING
 %import common.INT -> INT
-
 %import common.WS
 %ignore WS
-%import common.CNAME -> name 
+%import common.CNAME -> NAME 
