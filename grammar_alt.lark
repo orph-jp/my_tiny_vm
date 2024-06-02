@@ -7,7 +7,7 @@
 
 class: class_signature class_body -> clazz
 
-ident: CNAME //# the names we provide functions, vars, etc 
+ident: name //# the names we provide functions, vars, etc 
 
 class_signature: "class" ident "(" formal_args ")" [ "extends" ident ]
 
@@ -19,11 +19,11 @@ statement_block: "{" (statement)* "}" //# defines all instances of { something }
 
 formal_args: [ ident ":" ident ( "," ident ":" ident)* ]
 
-statement: "if" r_expr statement_block ("elif" r_expr statement_block)*
-[ "else" statement_block ]
+statement: "if" r_expr statement_block ("elif" r_expr statement_block)* [ "else" statement_block ]
     | "while" r_expr statement_block
     | l_expr [":" ident] "=" r_expr ";" -> assign_vars
     | "return" [ r_expr ] ";"
+    | r_expr ";"
     | typecase
 
 typecase: "typecase" r_expr "{" (type_alternative)* "}" //# typecase used as switch-case in C but
@@ -35,8 +35,8 @@ l_expr: ident
     | r_expr "." ident //# this is for cases wherein an assignment is made to what we typically would
 		       //#  categorize as a "right-hand" expression: foo.findmax(this.children).weight = 42;
 
-r_expr: string_literal
-    | int_literal  
+r_expr: str_literal 
+    | int_literal
     | l_expr 
     | r_expr "+" r_expr
     | r_expr "-" r_expr 
@@ -52,8 +52,10 @@ r_expr: string_literal
     | r_expr "and" r_expr -> cond_and
     | r_expr "or" r_expr  -> cond_or
     | "not" r_expr -> neg
+    | sum
     | r_expr "." ident "(" actual_args ")" -> method
     | ident "(" actual_args ")" -> fieldreference
+
 
 string_literal: "\0" | "\b" | "\t" | "\n" | "\r" | "\f" | "\" | "\\"  
 
@@ -65,18 +67,17 @@ actual_args: [ r_expr ("," r_expr)* ]
 
 ?factor: atom
     | factor "." ident "(" actuals ")" -> method_call //# actuals are the arguments to a func
-    | ident "(" actuals ")" -> constructor_call
-
-actuals: [ expr ("," expr)*]
+    | ident "(" actual_args ")" -> constructor_call
 
 ?product: product "*" INT -> times
     | product "/" INT -> divide
 
 ?sum: sum "+" product -> plus
     | sum "-" product -> minus
+    | product
 
-int_const: INT
-%import common.INT
+%import common.INT -> INT
+
 %import common.WS
 %ignore WS
-%import common.CNAME 
+%import common.CNAME -> name 
