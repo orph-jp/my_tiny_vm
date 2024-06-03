@@ -2,19 +2,24 @@ import grammar_ast_alt
 import lark
 
 import logging
-logging.basicConfig()
-log = logging.getLogger(__name__)
+log = logging.getLogger('name')
 log.setLevel(logging.DEBUG)
+log.debug("hello")
 
-class ExprTransformer(lark.Transformer):
+class QuackTransformer(lark.Transformer):
+    """The grammar generates derivations which are then, via this class,
+    creating node types inheriting from grammar_ast.ASTNode"""
+    """
     def __init__(self, file_path=None):
         # is this where I wish to include the file output? if file is not None:
-        if file is not None:
+        if file_path is not None:
             with open(file_path, 'w'):
-                write(".class: Main") # like wr
-
+                self.write_to_buffer(".class: Main") # like wr
                 # write(buffer)
-
+        else:
+            with open("/out.asm", 'w'):
+                self.write_to_buffer(".class: Main") # like wr
+    """
     def program(self, e):
         log.debug("->program")
         classes, main_block = e # recall e is just the relevant data for initializing the proper node type.
@@ -30,7 +35,7 @@ class ExprTransformer(lark.Transformer):
         be an int. This is a terminal symbol, i.e., an int-const"""
         log.debug(f"Processing token INT with {data}")
         val = int(data.value)
-        ast_node = grammar_ast.Int_literal(val)
+        ast_node = grammar_ast_alt.Int_literal(val)
         log.debug(f"Processed token into value {ast_node}")
         return ast_node
 
@@ -42,23 +47,30 @@ class ExprTransformer(lark.Transformer):
 
     def plus(self, e):
         log.debug("-> plus")
+        print(str(e))
         left, right = e # left, right are the operands
-        return grammar_ast_alt.MethodCallNode("PLUS", left, [ right ])
+        return grammar_ast_alt.MethodNode("PLUS", left, [ right ])
 
     def minus(self, e):
         log.debug("-> minus")
-        left, op, right = e
-        return grammar_ast_alt.MethodCallNode("MINUS", left, [ right ])
+        left, right = e
+        log.debug(e)
+        print(str(e))
+        return grammar_ast_alt.MethodNode("MINUS", left, [ right ])
 
     def times(self, e):
         log.debug("-> times")
-        left, op, right = e
-        return grammar_ast_alt.MethodCallNode("TIMES", left, [ right ])
+        left, right = e
+        log.debug(e)
+        print(str(e))
+        return grammar_ast_alt.MethodNode("TIMES", left, [ right ])
 
     def divide(self, e):
         log.debug("-> divide")
-        left, op, right = e
-        return grammar_ast_alt.MethodCallNode("DIVIDE", left, [ right ])
+        left, right = e
+        log.debug(e)
+        print(str(e))
+        return grammar_ast_alt.MethodNode("DIVIDE", left, [ right ])
 
     def sum(self, children):
         """The base case, factor -> int."""

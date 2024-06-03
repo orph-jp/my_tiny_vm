@@ -7,7 +7,7 @@
 
 class: class_signature class_body -> clazz
 
-ident: NAME //# the names we provide functions, vars, etc 
+ident: NAME -> ident //# the names we provide functions, vars, etc 
 
 class_signature: "class" ident "(" formal_args ")" [ "extends" ident ]
 
@@ -19,10 +19,10 @@ statement_block: "{" (statement)* "}" //# defines all instances of { something }
 
 formal_args: [ ident ":" ident ( "," ident ":" ident)* ]
 
-statement: "if" r_expr statement_block ("elif" r_expr statement_block)* [ "else" statement_block ]
-    | "while" r_expr statement_block
+statement: "if" r_expr statement_block ("elif" r_expr statement_block)* [ "else" statement_block ] -> ifstmt
+    | "while" r_expr statement_block -> whilestmt
     | l_expr [":" ident] "=" r_expr ";" -> assign_vars
-    | "return" [ r_expr ] ";"
+    | "return" [ r_expr ] ";" 
     | r_expr ";"
     | typecase
 
@@ -35,14 +35,13 @@ l_expr: ident
     | r_expr "." ident //# this is for cases wherein an assignment is made to what we typically would
 		       //#  categorize as a "right-hand" expression: foo.findmax(this.children).weight = 42;
 
-r_expr: str_literal 
-    | int_literal
+r_expr: str_literal
     | l_expr 
     | r_expr "+" r_expr
-    | r_expr "-" r_expr 
-    | r_expr "*" r_expr 
+    | r_expr "-" r_expr
+    | r_expr "*" r_expr
     | r_expr "/" r_expr
-    | "-" r_expr 
+    | "-" sum 
     | "(" r_expr ")"
     | r_expr "==" r_expr -> bool_eq 
     | r_expr "<=" r_expr -> bool_leq
@@ -57,23 +56,21 @@ r_expr: str_literal
     | ident "(" actual_args ")" -> fieldreference
 
 
-str_literal: STRING
-
-string_literal: "\0" | "\b" | "\t" | "\n" | "\r" | "\f" | "\\" | " \" " 
+str_literal: "\0" | "\b" | "\t" | "\n" | "\r" | "\f" | "\\" | " \" " 
 
 int_literal: INT //# as the quack guide explains, -99 is NOT an int_literal.
 
-actual_args: [ r_expr ("," r_expr)* ]
+actual_args: [ r_expr ("," r_expr)* ] -> args
 
 //# room for improvement by defining "op" non terminal
-?product: product "*" INT -> times
-    | product "/" INT -> divide
+?product: product "*" int_literal -> times
+    | product "/" int_literal -> divide
+    | int_literal
 
 ?sum: sum "+" product -> plus
     | sum "-" product -> minus
     | product
 
-%import common._STRING_INNER -> STRING
 %import common.INT -> INT
 %import common.WS
 %ignore WS
