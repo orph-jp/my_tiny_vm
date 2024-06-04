@@ -4,6 +4,7 @@ transform to form abstract syntax tree"""
 
 import sys
 import lark
+from lark import tree as lark_tree
 import grammar_ast_alt
 import grammar_reshape
 
@@ -19,11 +20,11 @@ def main():
     concrete = parser.parse(src_text)
     print("Parse tree (concrete syntax):")
     print(concrete.pretty())
+    lark_tree.pydot__tree_to_png(concrete, "parse_tree.png")
     
     
     # TODO: Include the file to write in the initialization of the transformer
     transformer = grammar_reshape.QuackTransformer()
-    
     ast: grammar_ast_alt.ASTNode = transformer.transform(concrete)
     """
     buffer = [] # create buffer contains asm instructions

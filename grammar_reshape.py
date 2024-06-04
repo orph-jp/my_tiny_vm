@@ -22,13 +22,15 @@ class QuackTransformer(lark.Transformer):
     """
     def program(self, e):
         log.debug("->program")
-        classes, main_block = e # recall e is just the relevant data for initializing the proper node type.
-        return grammar_ast_alt.ProgramNode(classes, main_block)
+        print(str(e))
+        # classes, main_block = e # recall e is just the relevant data for initializing the proper node type.
+        #  return grammar_ast_alt.ProgramNode(classes, main_block)
 
     def clazz(self, e):
         log.debug("->clazz")
-        class_sig, constructor_args, superclass, methods, block = e
-        grammar_ast_alt.ClassNode(class_sig, constructor_args, superclass, methods, block)
+        name, formals, superclass, constructor, methods = e
+        # print(str(name), str(formals), str(superclass), str(constructor), str(methods) )
+        grammar_ast_alt.ClassNode(name, formals, superclass, methods, constructor)
 
     def INT(self, data):
         """ Data is the stored value passed as an argument. This must
@@ -47,7 +49,6 @@ class QuackTransformer(lark.Transformer):
 
     def plus(self, e):
         log.debug("-> plus")
-        print(str(e))
         left, right = e # left, right are the operands
         return grammar_ast_alt.MethodNode("PLUS", left, [ right ])
 
@@ -55,21 +56,17 @@ class QuackTransformer(lark.Transformer):
         log.debug("-> minus")
         left, right = e
         log.debug(e)
-        print(str(e))
         return grammar_ast_alt.MethodNode("MINUS", left, [ right ])
 
     def times(self, e):
         log.debug("-> times")
         left, right = e
-        log.debug(e)
-        print(str(e))
+        log.debug(e) # bug point
         return grammar_ast_alt.MethodNode("TIMES", left, [ right ])
 
     def divide(self, e):
         log.debug("-> divide")
         left, right = e
-        log.debug(e)
-        print(str(e))
         return grammar_ast_alt.MethodNode("DIVIDE", left, [ right ])
 
     def sum(self, children):

@@ -15,12 +15,7 @@ x = 0
 class ASTNode:
     """Abstract base class for abstract sequence of patterns"""
     def __init__(self):
-        this_class = self.__class__.__name__
         self.children = []
-        if this_class == "ASTNode":
-            raise NotImplementedError("ASTNode is an abstract class and should not be instantiated")
-        else:
-            raise NotImplementedError(f"{this_class} is missing a constructor method")
     
     def r_eval(self, buffer: list[str]):
         """Evaluate for value, i.e., generate code that will
@@ -72,6 +67,7 @@ class ProgramNode(ASTNode):
     def __init__(self, classes: List[ASTNode],  main_block: ASTNode):
         super().__init__() # as always, initialize the super class
         self.classes = classes 
+        log.debug(f"Processing Program node with arg:class {self.classes}")
         main_class = ClassNode("$Main", [], "Obj", [], main_block) # main is a class, in essence. Obj is default parent class.
         self.classes.append(main_class) # so it becomes the first entry into self.classes
         self.children = self.classes # descendants of the main class is everything else in the tree--append just main now
@@ -85,12 +81,13 @@ class ProgramNode(ASTNode):
 
 class ClassNode(ASTNode):
     """Class ::= class_signature, class_body, constructor (args are formals), superclass"""
-    def __init__(self, class_sig: str, constructor_args: List[ASTNode], superclass: str, methods: List[ASTNode], block: ASTNode): 
+    def __init__(self, class_sig: str, formals: List[ASTNode], superclass: str, methods: List[ASTNode], block: ASTNode): 
         super().__init__()
         self.class_sig = class_sig
-        self.constructor = MethodNode("$constructor", constructor_args, "Nothing", block)
+        self.superclass = superclass
+        self.constructor = MethodNode("$constructor", formals, "Nothing", block)
         self.methods = methods
-        self.methods.insert(0, self.constructor) # design choice to have constructor be the first method        
+        self.methods.append(self.constructor) # design choice to have constructor be the first method        
     def __str__(self):
         """First we must join the seperate elements before python's iterative magic can produce the string representation  """
         constargs = ", ".join([str(arg) for arg in self.constructor.actuals]) # str(arg) will do the ASTNode str repr.
