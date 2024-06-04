@@ -87,7 +87,7 @@ class ClassNode(ASTNode):
         self.superclass = superclass
         self.constructor = MethodNode("$constructor", formals, "Nothing", block)
         self.methods = methods
-        self.methods.append(self.constructor) # design choice to have constructor be the first method        
+        self.methods.append(self.constructor) # design choice to have constructor be the first method--NOTE: REVERTED 
     def __str__(self):
         """First we must join the seperate elements before python's iterative magic can produce the string representation  """
         constargs = ", ".join([str(arg) for arg in self.constructor.actuals]) # str(arg) will do the ASTNode str repr.
@@ -96,7 +96,7 @@ class ClassNode(ASTNode):
             {methods} /* statements as a constructor */ {self.constructor} {RB}
             /* end class {self.class_sig} */"""
         # TODO: Reverse-engineer the corresponding parameter classes and methods
-        # TODO: Make sure this is correct
+        # TODO: Make sure this is correct-NOTE: DEFINITELY NOT
 
     # TODO: method_table_visit
 class MethodNode(ASTNode):

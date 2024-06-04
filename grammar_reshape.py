@@ -24,7 +24,7 @@ class QuackTransformer(lark.Transformer):
         log.debug("->program")
         print(str(e))
         # classes, main_block = e # recall e is just the relevant data for initializing the proper node type.
-        #  return grammar_ast_alt.ProgramNode(classes, main_block)
+        # return grammar_ast_alt.ProgramNode(classes, main_block)
 
     def clazz(self, e):
         log.debug("->clazz")
@@ -85,6 +85,12 @@ class QuackTransformer(lark.Transformer):
         e must therefore already be a grammar_ast.ASTNode"""
         log.debug("-> cond")
         return e
+
+    def method(self, e):
+        """Method class"""
+        log.debug("-> method")
+        name, receiver, actuals = e
+        return grammar_ast_alt.MethodNode(name, receiver, actuals)
 
     def expr_one(self, children):
         """This will always be the first reduction to expr"""
