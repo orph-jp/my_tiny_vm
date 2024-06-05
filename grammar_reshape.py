@@ -47,6 +47,8 @@ class QuackTransformer(lark.Transformer):
         log.debug(f"Processing 'int' with {children}")
         return children[0]
 
+    """SECTION: Here are the transformer methods for mathematical operators"""
+
     def plus(self, e):
         log.debug("-> plus")
         left, right = e # left, right are the operands
@@ -74,8 +76,18 @@ class QuackTransformer(lark.Transformer):
         log.debug(f"Processing sum base case {children}")
         return children[0]
 
+    """SECTION: Here are the transformer methods for various built-in methods"""
+
+    def method(self, e):
+        """Method class"""
+        log.debug("-> method")
+        name, receiver, actuals = e
+        return grammar_ast_alt.MethodNode(name, receiver, actuals)
+
     def ifstmt(self, e):
-        """ifstmt production as referenced by grammar.lark"""
+        """ifstmt derivation as referenced by grammar.lark. I have chosen
+        not to have this be in the form a method call.= and be in a seperate
+        class entirely."""
         log.debug("-> ifstmt")
         cond, thenpart, elspart = e
         return grammar_ast_alt.IfStmtNode(cond, thenpart, elsepart)
@@ -86,12 +98,48 @@ class QuackTransformer(lark.Transformer):
         log.debug("-> cond")
         return e
 
-    def method(self, e):
-        """Method class"""
-        log.debug("-> method")
-        name, receiver, actuals = e
-        return grammar_ast_alt.MethodNode(name, receiver, actuals)
+    def whilestmt(self, e):
+        """While statement"""
+        log.debug("-> while")
+        cond, thenpart = e
+        # return grammar_ast_alt.WhileNode(
 
+    def cond_and(self, e):
+        log.debug("-> cond_and")
+        left, right = e
+        return grammar_ast_alt.MethodNode("BOOL_AND", left, [ right ])
+
+    def cond_or(self, e):
+        log.debug("-> cond_or")
+        left, right = e
+        return grammar_ast_alt.MethodNode("BOOL_OR", left, [ right ])
+
+    def bool_lt(self, e):
+        log.debug("-> bool_lt")
+        left, right = e
+        return grammar_ast_alt.MethodNode("BOOL_LT", left [ right ])
+
+    def bool_gt(self, e):
+        log.debug("-> bool_gt")
+        left, right = e
+        return grammar_ast_alt.MethodNode("BOOL_GT", left [ right ])
+
+    def bool_leq(self, e):
+        log.debug("-> bool_leq")
+        left, right = e
+        return grammar_ast_alt.MethodNode("BOOL_LEQ", left [ right ])
+
+    def bool_geq(self, e):
+        log.debug("-> bool_geq")
+        left, right = e
+        return grammar_ast_alt.MethodNode("BOOL_GEQ", left [ right ])
+
+    def bool_eq(self, e):
+        log.debug("-> bool_eq")
+        left, right = e
+        return grammar_ast_alt.MethodNode("BOOL_EQ", left [ right ])
+
+    """SECTION: Here are the transformer methods distinguishing between recursive or non-recursive classification"""
     def expr_one(self, children):
         """This will always be the first reduction to expr"""
         log.debug(f"Processing exp (base case) with {children}")

@@ -129,6 +129,9 @@ class MethodNode(ASTNode):
         self.receiver.r_eval(buffer)
         buffer.append(f"call Int:{self.name}")
 
+"""
+class WhileNode(ASTNode):
+    def __init__(self, cond) """
 class BareExprNode(ASTNode):
     """x; -- It is just being performed. Or, foo(a,b);"""
     def __init__(self, expr: ASTNode):
