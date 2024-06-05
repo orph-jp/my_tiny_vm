@@ -32,6 +32,14 @@ class QuackTransformer(lark.Transformer):
         # print(str(name), str(formals), str(superclass), str(constructor), str(methods) )
         grammar_ast_alt.ClassNode(name, formals, superclass, methods, constructor)
 
+    def assign_vars(self, e):
+        """NOTE: e passed into buffer may be only 2 variables, in the case that there is no decl_type"""
+        """Later, this may need to be handled by checking if the variable is already assigned previously to
+        a constNode of the same type."""
+        log.debug("-> assignment")
+        left, decl_type, rhs = (e[0], None, e[1]) if len(e) == 2 else e
+        grammar_ast_alt.AssignmentNode(left, decl_type, rhs)
+
     def INT(self, data):
         """ Data is the stored value passed as an argument. This must
         be an int. This is a terminal symbol, i.e., an int-const"""
