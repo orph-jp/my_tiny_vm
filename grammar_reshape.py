@@ -110,7 +110,7 @@ class QuackTransformer(lark.Transformer):
         """While statement"""
         log.debug("-> while")
         cond, thenpart = e
-        # return grammar_ast_alt.WhileNode(
+        # return grammar_ast_alt.WhileNode(cond, thenpart)
 
     def cond_and(self, e):
         log.debug("-> cond_and")

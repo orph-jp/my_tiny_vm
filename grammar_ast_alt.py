@@ -129,9 +129,36 @@ class MethodNode(ASTNode):
         self.receiver.r_eval(buffer)
         buffer.append(f"call Int:{self.name}")
 
-"""
 class WhileNode(ASTNode):
-    def __init__(self, cond) """
+    def __init__(self, cond, thenpart):
+        self.cond = cond
+        self.thenpart = thenpart
+
+    def gen_code(self, buffer: list[str]):
+        """A while statement generates control flow to execute the then part if cond
+        is held.
+
+        Algorithm for while c { s; } is as follows:
+        _____________________________________________________________________
+            jump whiletest
+        loophead:
+            < code for s >
+        whiletest:
+            if <c> goto loophead
+        """
+        loophead = gen_loop_label() # generate the label quickly for the loophead
+        buffer.append(f"{loophead}: ") # the label is passed into the buffer to be put into .asm
+        self.thenpart.gen_code(buffer) # this will write the instructions in .asm inside of the block 
+        """Now a few buffer.appends to append the corresponding labels in the right order """ 
+    def c_eval(self):
+        pass
+
+def gen_loop_label():
+    looplabel = "loophead" + str(x)
+    x += 1
+    return looplabel
+
+
 class BareExprNode(ASTNode):
     """x; -- It is just being performed. Or, foo(a,b);"""
     def __init__(self, expr: ASTNode):
@@ -200,12 +227,35 @@ class IfStmtNode(ASTNode):
 
     def gen_code(self, buffer: list[str]):
         """An if statement generates control flow
-        to execute either the 'then' or 'else' part."""
+        to execute either the 'then' or 'else' part.
+
+        Algorithm for generating code for if(cond1) { Block1; } elseif (cond2) { Block2; } else { Block3; } is as follows:
+        ______________________________________________        
+
+        <evaluate cond1>
+            jump_ifnot ElseIfLabel
+
+        <code for Block1>
+        jump EndLabel
+
+        ElseIfLabel:
+            < evaluate cond2; >
+            jump_ifnot ElseLabel
+            
+            <code for Block 2>
+            jump EndLabel
+
+        ElseLabel:
+            <code for Block 3>
+
+        EndLabel:
+            Continue with rest of program
+            """
         thenpart_label = gen_label("then") # generate label quickly for then part
         elsepart_label = gen_label("else") # generate label quickly for else part
         endif_label = gen_label("endif") # generate label quickly for end part 
         self.cond.c_eval(thenpart_label, elsepart_label, buffer) # writing assembly with the generated labels
-        buffer.append(f"{thenpart_label}: ") # the label to be in the .asm
+        buffer.append(f"{thenpart_label}: ") # the label is passed into the buffer to be in the .asm
         self.thenpart.gen_code(buffer) # this will write the instructions inside  the if statement block--then part
         buffer.append(f"\tjump {endif_label}")
         buffer.append(f"\t{elsepart_label}: ")
