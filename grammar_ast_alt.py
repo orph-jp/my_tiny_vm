@@ -147,9 +147,12 @@ class WhileNode(ASTNode):
             if <c> goto loophead
         """
         loophead = gen_loop_label() # generate the label quickly for the loophead
+        whiletest = gen_whiletest_label() # generate the label quickly for whiletest
         buffer.append(f"{loophead}: ") # the label is passed into the buffer to be put into .asm
         self.thenpart.gen_code(buffer) # this will write the instructions in .asm inside of the block 
-        """Now a few buffer.appends to append the corresponding labels in the right order """ 
+        """Now a few intermediate code generations, in the right order (this means it has to be passed
+        in in the right order.""" 
+
     def c_eval(self):
         pass
 
@@ -158,6 +161,10 @@ def gen_loop_label():
     x += 1
     return looplabel
 
+def gen_whiletest_label():
+    whiletest = "whiletest" + str(x)
+    x += 1
+    return whiletest
 
 class BareExprNode(ASTNode):
     """x; -- It is just being performed. Or, foo(a,b);"""
