@@ -1,12 +1,8 @@
-/* Initialization check should fail specifically
-* on variable booboo.
-*/
-
 earth:Int = 22;
 if earth < 30 {
     wind:Int = 14;
     fire:Int = 18;
-    booboo:Int - 24;
+    booboo:Int = 24;
 } else {
     fire:Int = 27;
     wind:Int = 13;
