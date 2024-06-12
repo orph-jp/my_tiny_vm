@@ -15,7 +15,7 @@ def main():
     #                   parser="lalr", strict=True)
     parser = lark.Lark(gram_file, parser="lalr", debug=True)
     # Open an example file for reading
-    src_file = open("examples/EXGrammar1.txt", "r")
+    src_file = open("examples/EXGrammar1.qk", "r")
     src_text = "".join(src_file.readlines())
     concrete = parser.parse(src_text)
     print("Parse tree (concrete syntax):")

@@ -17,13 +17,13 @@ class ASTNode:
     def __init__(self):
         self.children = []
     
-    def r_eval(self, buffer: list[str]):
+    def r_eval(self, buffer: list[str]) -> List[str]:
         """Evaluate for value, i.e., generate code that will
         result in evaluating an expression of some kind for a value.
         Always increases stack depth by 1."""
         raise NotImplementedError(f"r_eval not implemented for node type {self.__class__.__name__}") # because this is called by self.__class__.__name__ instance and will redirected to Abstract class
 
-    def c_eval(self, true_branch: str, false_branch: str, buffer: list[str]):
+    def c_eval(self, true_branch: str, false_branch: str, buffer: list[str]) -> List[str]:
         """ Code generation method for control flow evaluation. 
         Branches = labels (used in .asm). When evaluated, serves as a go-to, in some sense,
         but rather a 'fall through'"""
@@ -129,6 +129,15 @@ class MethodNode(ASTNode):
         self.receiver.r_eval(buffer)
         buffer.append(f"call Int:{self.name}")
 
+    def c_eval(self, true_branch: str, false_branch: str, buffer: list[str]):
+        """ 
+        Used for evaluating a comparison, or another boolean method: that is, if x > y (a  comparison-variable
+        reference) or another method call (such as EQUALS) 
+        """
+        self.r_eval(buffer)
+        buffer.append(f"\tjump_ifnot {false_branch}")
+        buffer.append(f"\tjump {true_branch}")
+
 class WhileNode(ASTNode):
     def __init__(self, cond, thenpart):
         self.cond = cond
@@ -148,14 +157,14 @@ class WhileNode(ASTNode):
         """
         loophead = gen_loop_label() # generate the label quickly for the loophead
         whiletest = gen_whiletest_label() # generate the label quickly for whiletest
+        self.cond.c_eval(whiletest, buffer) # generate conditional and uncondiitonal jumps
         buffer.append(f"{loophead}: ") # the label is passed into the buffer to be put into .asm
-        self.thenpart.gen_code(buffer) # this will write the instructions in .asm inside of the block 
         """Now a few intermediate code generations, in the right order (this means it has to be passed
         in in the right order.""" 
-
-    def c_eval(self):
-        pass
-
+        self.thenpart.gen_code(buffer) # this will write the instructions in .asm inside of the block 
+        buffer.append(f"{whiletest}: ")
+        # TODO: Add the last line of the example above into the buffer--ask Michal
+        
 def gen_loop_label():
     looplabel = "loophead" + str(x)
     x += 1
@@ -269,14 +278,6 @@ class IfStmtNode(ASTNode):
         self.elsepart.gen_code(buffer) # this will write the instructions inside the else statement block--part 
         buffer.append(f"{endif_label}: ")
 
-    def c_eval(self, true_branch: str, false_branch: str, buffer: list[str]):
-        """ 
-        Used for evaluating a comparison, or another boolean method: that is, if x > y (a  comparison-variable
-        reference) or another method call (such as EQUALS) 
-        """
-        self.r_eval(buffer)
-        buffer.append(f"\tjump_ifnot {false_branch}")
-        buffer.append(f"\tjump {true_branch}")
 
 class Sum(ASTNode):
     pass

@@ -8,8 +8,8 @@ if earth < 30 {
     fire:Int = 18;
     booboo:Int - 24;
 } else {
-    fire = 27;
-    wind = 13;
+    fire:Int = 27;
+    wind:Int = 13;
 }
 earth = wind + fire;
 booboo = booboo + wind;
