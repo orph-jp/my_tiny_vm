@@ -59,7 +59,6 @@ class ASTNode:
             for child in flatten(self.children): # make the list 1 dimensional
                 """Could use isinstance here to verify for debugging that each node in the self.children is 
                 actually a valid type (ASTNode or inherited)"""
-                # graph.node(str(child))
                 child.digraph(graph)
 
 class ProgramNode(ASTNode):
@@ -98,6 +97,9 @@ class ClassNode(ASTNode):
         # TODO: Reverse-engineer the corresponding parameter classes and methods
         # TODO: Make sure this is correct-NOTE: DEFINITELY NOT
 
+    def gen_code(self):
+        """Local variables--referenced as boilerplate"""
+        pass
     # TODO: method_table_visit
 class MethodNode(ASTNode):
     """This class classifies nodes that result from source code that
@@ -157,12 +159,15 @@ class WhileNode(ASTNode):
         """
         loophead = gen_loop_label() # generate the label quickly for the loophead
         whiletest = gen_whiletest_label() # generate the label quickly for whiletest
-        self.cond.c_eval(whiletest, buffer) # generate conditional and uncondiitonal jumps
+        loopexit = gen_loopexit
+        buffer.append(f"\tjump {whiletest}")
         buffer.append(f"{loophead}: ") # the label is passed into the buffer to be put into .asm
         """Now a few intermediate code generations, in the right order (this means it has to be passed
         in in the right order.""" 
         self.thenpart.gen_code(buffer) # this will write the instructions in .asm inside of the block 
         buffer.append(f"{whiletest}: ")
+        self.cond.c_eval(whiletest, loophead, loopexit, buffer) # generate conditional and uncondiitonal jumps
+        # true branch: loophead, false branch: loop exit
         # TODO: Add the last line of the example above into the buffer--ask Michal
         
 def gen_loop_label():
@@ -174,6 +179,11 @@ def gen_whiletest_label():
     whiletest = "whiletest" + str(x)
     x += 1
     return whiletest
+
+def gen_loopexit_label():
+    loopexit = "loopexit" + str(x)
+    x += 1
+    return loopexit
 
 class BareExprNode(ASTNode):
     """x; -- It is just being performed. Or, foo(a,b);"""
