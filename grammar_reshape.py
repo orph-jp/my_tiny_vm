@@ -22,9 +22,10 @@ class QuackTransformer(lark.Transformer):
     """
     def program(self, e):
         log.debug("->program")
-        print(str(e))
-        # classes, main_block = e # recall e is just the relevant data for initializing the proper node type.
-        # return grammar_ast_alt.ProgramNode(classes, main_block)
+        log.debug(e)
+        classes, main_block = (e[0], None) if len(e) == 1 else e # recall e is just the relevant 
+                                                                 # data for initializing the proper node type.
+        return grammar_ast_alt.ProgramNode(classes, main_block)
 
     def clazz(self, e):
         log.debug("->clazz")
@@ -54,6 +55,13 @@ class QuackTransformer(lark.Transformer):
         a single child, which will have been transformed by the INT method above."""
         log.debug(f"Processing 'int' with {children}")
         return children[0]
+
+    
+    # def bareepxr(self, e):
+        """Such as x; or foo(x, a);"""
+        # log.debug("->bareexpr")
+        # log.debug(e)
+
 
     """SECTION: Here are the transformer methods for mathematical operators"""
 
@@ -87,10 +95,10 @@ class QuackTransformer(lark.Transformer):
     """SECTION: Here are the transformer methods for various built-in methods"""
 
     def method(self, e):
-        """Method class"""
+        """Method class--for defining a method"""
         log.debug("-> method")
-        name, receiver, actuals = e
-        return grammar_ast_alt.MethodNode(name, receiver, actuals)
+        # name, receiver, actuals = e
+        # return grammar_ast_alt.MethodNode(name, receiver, actuals)
 
     def ifstmt(self, e):
         """ifstmt derivation as referenced by grammar.lark. I have chosen
@@ -110,7 +118,7 @@ class QuackTransformer(lark.Transformer):
         """While statement"""
         log.debug("-> while")
         cond, thenpart = e
-        # return grammar_ast_alt.WhileNode(cond, thenpart)
+        return grammar_ast_alt.WhileNode(cond, thenpart)
 
     def cond_and(self, e):
         log.debug("-> cond_and")
@@ -146,6 +154,10 @@ class QuackTransformer(lark.Transformer):
         log.debug("-> bool_eq")
         left, right = e
         return grammar_ast_alt.MethodNode("BOOL_EQ", left [ right ])
+
+    def methodcall(self, e):
+        log.debug("-> methodcall")
+        # TODO: Implement
 
     """SECTION: Here are the transformer methods distinguishing between recursive or non-recursive classification"""
     def expr_one(self, children):

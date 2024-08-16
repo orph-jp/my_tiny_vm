@@ -13,7 +13,7 @@ class_signature: "class" ident "(" formal_args ")" [ "extends" ident ]
 
 class_body: "{" (statement)* (method)* "}" //# the body containing the class methods and data members
 
-method: "def" ident "(" formal_args ")" [ ":" ident ] statement_block -> method
+method: "def" ident "(" formal_args ")" [ ":" ident ] statement_block -> method //# a method declaration, moreso.
 
 statement_block: "{" (statement)* "}" //# defines all instances of { something } in quack 
 
@@ -52,7 +52,7 @@ r_expr: str_literal
     | r_expr "or" r_expr  -> cond_or
     | "not" r_expr -> neg
     | sum
-    | r_expr "." ident "(" actual_args ")" -> method
+    | r_expr "." ident "(" actual_args ")" -> methodcall //# different than production for a method.
     | ident "(" actual_args ")" -> fieldreference
 
 
